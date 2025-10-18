@@ -1,8 +1,167 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <h1 class="h3 mb-4">Dashboard</h1>
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Klanten
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Dashboard.TotaalKlanten</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Bestellingen
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Dashboard.TotaalBestellingen</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Openstaande Facturen
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Dashboard.OpenstaandeFacturen</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Totale Omzet
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">€ @ViewBag.Dashboard.TotaalOmzet.ToString("N2")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recente Bestellingen -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Recente Bestellingen</h6>
+                    <a asp-controller="Bestellingen" asp-action="Index" class="btn btn-sm btn-primary">Alle bestellingen</a>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.RecenteBestellingen != null && ViewBag.RecenteBestellingen.Count > 0)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Bestelnummer</th>
+                                        <th>Klant</th>
+                                        <th>Datum</th>
+                                        <th>Status</th>
+                                        <th>Totaal</th>
+                                        <th>Acties</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var bestelling in ViewBag.RecenteBestellingen)
+                                    {
+                                        <tr>
+                                            <td>@bestelling.BestelNummer</td>
+                                            <td>@bestelling.Klant.Bedrijfsnaam</td>
+                                            <td>@bestelling.BestelDatum.ToString("dd-MM-yyyy")</td>
+                                            <td>
+                                                <span class="badge badge-@(bestelling.Status == FlowBill.Models.BestellingStatus.InBehandeling ? "warning" :
+                                                                                                          bestelling.Status == FlowBill.Models.BestellingStatus.Goedgekeurd ? "success" :
+                                                                                                          bestelling.Status == FlowBill.Models.BestellingStatus.Verzonden ? "info" :
+                                                                                                          bestelling.Status == FlowBill.Models.BestellingStatus.Afgeleverd ? "primary" : "danger")">
+                                            @bestelling.Status
+                                        </span>
+                                    </td>
+                                    <td>€ @bestelling.Totaal.ToString("N2")</td>
+                                    <td>
+                                        <a asp-controller="Bestellingen" asp-action="Details" asp-route-id="@bestelling.Id"
+                                           class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">Nog geen bestellingen aanwezig.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Snelle Acties</h6>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="Bestellingen" asp-action="Create" class="btn btn-success mr-2">
+                        <i class="fas fa-plus"></i> Nieuwe Bestelling
+                    </a>
+                    <a asp-controller="Klanten" asp-action="Create" class="btn btn-primary mr-2">
+                        <i class="fas fa-user-plus"></i> Nieuwe Klant
+                    </a>
+                    <a asp-controller="Producten" asp-action="Create" class="btn btn-info mr-2">
+                        <i class="fas fa-box"></i> Nieuw Product
+                    </a>
+                    <a asp-controller="Facturen" asp-action="Index" class="btn btn-warning">
+                        <i class="fas fa-file-invoice"></i> Bekijk Facturen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
