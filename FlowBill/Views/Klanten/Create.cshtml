@@ -1,0 +1,111 @@
+﻿@model FlowBill.Models.Klant
+
+@{
+    ViewData["Title"] = "Nieuwe Klant";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h4 class="mb-0">Nieuwe Klant Toevoegen</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Bedrijfsnaam" class="control-label"></label>
+                                    <input asp-for="Bedrijfsnaam" class="form-control" />
+                                    <span asp-validation-for="Bedrijfsnaam" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Contactpersoon" class="control-label"></label>
+                                    <input asp-for="Contactpersoon" class="form-control" />
+                                    <span asp-validation-for="Contactpersoon" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Email" class="control-label"></label>
+                                    <input asp-for="Email" class="form-control" type="email" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Telefoon" class="control-label"></label>
+                                    <input asp-for="Telefoon" class="form-control" type="tel" />
+                                    <span asp-validation-for="Telefoon" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Adres" class="control-label"></label>
+                            <input asp-for="Adres" class="form-control" />
+                            <span asp-validation-for="Adres" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="Postcode" class="control-label"></label>
+                                    <input asp-for="Postcode" class="form-control" />
+                                    <span asp-validation-for="Postcode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label asp-for="Stad" class="control-label"></label>
+                                    <input asp-for="Stad" class="form-control" />
+                                    <span asp-validation-for="Stad" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="BTWNummer" class="control-label"></label>
+                                    <input asp-for="BTWNummer" class="form-control" />
+                                    <span asp-validation-for="BTWNummer" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="KVKNummer" class="control-label"></label>
+                                    <input asp-for="KVKNummer" class="form-control" />
+                                    <span asp-validation-for="KVKNummer" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Opslaan
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuleren
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
