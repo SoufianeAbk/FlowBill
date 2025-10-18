@@ -1,0 +1,352 @@
+﻿@model FlowBill.Controllers.RapportViewModel
+
+@{
+    ViewData["Title"] = "Rapporten";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Rapporten & Analytics</h1>
+        <div>
+            <a asp-action="ExportFacturen" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Export Facturen
+            </a>
+            <a asp-action="OmzetRapport" class="btn btn-primary">
+                <i class="fas fa-chart-line"></i> Omzet Rapport
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistieken Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Omzet Deze Maand
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                € @Model.OmzetHuidigeMaand.ToString("N2")
+                            </div>
+                            @{
+                                var percentageChange = Model.OmzetVorigeMaand > 0
+                                ? ((Model.OmzetHuidigeMaand - Model.OmzetVorigeMaand) / Model.OmzetVorigeMaand) * 100
+                                : 0;
+                            }
+                            <div class="text-xs text-@(percentageChange >= 0 ? "success" : "danger") mt-1">
+                                <i class="fas fa-@(percentageChange >= 0 ? "arrow-up" : "arrow-down")"></i>
+                                @Math.Abs(percentageChange).ToString("F1")% t.o.v. vorige maand
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Facturen Deze Maand
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.AantalFacturenHuidigeMaand</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Openstaande Facturen
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.OpenstaandeFacturen.Count</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Jaaromzet @DateTime.Now.Year
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">€ @Model.OmzetDitJaar.ToString("N2")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Omzet Overzicht</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="omzetChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 5 Producten</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.TopProducten.Any())
+                    {
+                        @foreach (var product in Model.TopProducten)
+                        {
+                            <div class="mb-3">
+                                <h6 class="small font-weight-bold">
+                                    @product.Product.Naam
+                                    <span class="float-right">€ @product.TotaalOmzet.ToString("N2")</span>
+                                </h6>
+                                <div class="progress">
+                                    @{
+                                        var maxOmzet = Model.TopProducten.Max(p => p.TotaalOmzet);
+                                        var percentage = maxOmzet > 0 ? (int)((product.TotaalOmzet / maxOmzet) * 100) : 0;
+                                    }
+                                    <div class="progress-bar bg-info" role="progressbar"
+                                         style="width: @percentage%"
+                                         aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                        @product.AantalVerkocht stuks
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Geen productdata beschikbaar.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables Row -->
+    <div class="row">
+        <!-- Top Klanten -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 5 Klanten</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.TopKlanten.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Klant</th>
+                                        <th>Bestellingen</th>
+                                        <th>Totaal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var klant in Model.TopKlanten)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a asp-controller="Klanten" asp-action="Details" asp-route-id="@klant.Klant.Id">
+                                                    @klant.Klant.Bedrijfsnaam
+                                                </a>
+                                            </td>
+                                            <td>@klant.AantalBestellingen</td>
+                                            <td class="font-weight-bold">€ @klant.TotaalBedrag.ToString("N2")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Geen klantdata beschikbaar.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Openstaande Facturen -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Openstaande Facturen</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.OpenstaandeFacturen.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Factuur</th>
+                                        <th>Klant</th>
+                                        <th>Vervaldatum</th>
+                                        <th>Bedrag</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var factuur in Model.OpenstaandeFacturen)
+                                    {
+                                        <tr class="@(factuur.VervalDatum < DateTime.Now ? "table-danger" : "")">
+                                            <td>
+                                                <a asp-controller="Facturen" asp-action="Details" asp-route-id="@factuur.Id">
+                                                    @factuur.FactuurNummer
+                                                </a>
+                                            </td>
+                                            <td>@factuur.Bestelling.Klant.Bedrijfsnaam</td>
+                                            <td>
+                                                @if (factuur.VervalDatum < DateTime.Now)
+                                                {
+                                                    <span class="text-danger">
+                                                        <i class="fas fa-exclamation-circle"></i>
+                                                        @factuur.VervalDatum.ToString("dd-MM-yyyy")
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    @factuur.VervalDatum.ToString("dd-MM-yyyy")
+                                                }
+                                            </td>
+                                            <td class="font-weight-bold">€ @factuur.Totaal.ToString("N2")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-success">
+                            <i class="fas fa-check-circle"></i> Geen openstaande facturen!
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Omzet Chart
+        var ctx = document.getElementById('omzetChart').getContext('2d');
+        var omzetChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.MaandelijkseOmzet.Keys.Select(k => $"'{k}'")))],
+                datasets: [{
+                    label: 'Omzet',
+                    data: [@string.Join(",", Model.MaandelijkseOmzet.Values)],
+                    backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                    borderColor: 'rgba(78, 115, 223, 1)',
+                    borderWidth: 3,
+                    pointRadius: 3,
+                    pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                    pointBorderColor: 'rgba(78, 115, 223, 1)',
+                    pointHoverRadius: 3,
+                    pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
+                    pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
+                    pointHitRadius: 10,
+                    pointBorderWidth: 2,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return '€ ' + value.toFixed(0);
+                            }
+                        },
+                        grid: {
+                            borderDash: [2],
+                            borderDashOffset: [2],
+                            drawBorder: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyColor: "#858796",
+                        titleMarginBottom: 10,
+                        titleColor: '#6e707e',
+                        titleFont: {
+                            size: 14
+                        },
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        displayColors: false,
+                        intersect: false,
+                        mode: 'index',
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += '€ ' + context.parsed.y.toFixed(2);
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
