@@ -1,0 +1,245 @@
+﻿/* FlowBill Custom Admin Styles */
+
+:root {
+    --primary-color: #4e73df;
+    --secondary-color: #858796;
+    --success-color: #1cc88a;
+    --info-color: #36b9cc;
+    --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
+}
+
+/* Wrapper */
+#wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 14rem;
+    min-height: 100vh;
+}
+
+    .sidebar .nav-link {
+        padding: 0.75rem 1rem;
+        width: 100%;
+    }
+
+.sidebar-brand {
+    height: 4.375rem;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 800;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .05rem;
+    z-index: 1;
+    color: #fff;
+}
+
+.bg-gradient-primary {
+    background-color: #4e73df;
+    background-image: linear-gradient(180deg,#4e73df 10%,#224abe 100%);
+}
+
+/* Content */
+#content-wrapper {
+    background-color: #f8f9fc;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#content {
+    flex: 1 0 auto;
+}
+
+/* Topbar */
+.topbar {
+    height: 4.375rem;
+    z-index: 1000;
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+/* Status Badges */
+.badge {
+    font-size: 75%;
+    font-weight: 400;
+    padding: .25rem .5rem;
+    border-radius: .25rem;
+}
+
+.badge-warning {
+    color: #fff;
+    background-color: #f6c23e;
+}
+
+.badge-success {
+    color: #fff;
+    background-color: #1cc88a;
+}
+
+.badge-info {
+    color: #fff;
+    background-color: #36b9cc;
+}
+
+.badge-danger {
+    color: #fff;
+    background-color: #e74a3b;
+}
+
+.badge-primary {
+    color: #fff;
+    background-color: #4e73df;
+}
+
+/* Border utilities */
+.border-left-primary {
+    border-left: .25rem solid #4e73df;
+}
+
+.border-left-success {
+    border-left: .25rem solid #1cc88a;
+}
+
+.border-left-info {
+    border-left: .25rem solid #36b9cc;
+}
+
+.border-left-warning {
+    border-left: .25rem solid #f6c23e;
+}
+
+/* Animations */
+.animated--grow-in {
+    animation: grow .2s ease-in;
+}
+
+@keyframes grow {
+    0% {
+        transform: scale(.9);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Footer */
+.sticky-footer {
+    padding: 2rem 0;
+    flex-shrink: 0;
+    background-color: #fff;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    text-align: center;
+    color: #fff;
+    background: rgba(90,92,105,.5);
+    line-height: 46px;
+    display: none;
+    border-radius: .35rem;
+}
+
+    .scroll-to-top:hover {
+        background: rgba(90,92,105,.8);
+    }
+
+/* DataTables overrides */
+.dataTables_wrapper {
+    padding: 0;
+}
+
+table.dataTable thead th {
+    border-bottom: 1px solid #e3e6f0;
+}
+
+table.dataTable.no-footer {
+    border-bottom: 1px solid #e3e6f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -14rem;
+        z-index: 9999;
+        transition: left .5s;
+    }
+
+        .sidebar.toggled {
+            left: 0;
+        }
+
+    #content-wrapper {
+        width: 100%;
+    }
+}
+
+/* Custom button styles */
+.btn-circle {
+    border-radius: 100%;
+    height: 2.5rem;
+    width: 2.5rem;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-sm {
+    padding: .25rem .5rem;
+    font-size: .875rem;
+}
+
+/* Forms */
+.form-control:focus {
+    border-color: #bac8f3;
+    box-shadow: 0 0 0 0.2rem rgba(78,115,223,.25);
+}
+
+/* Utilities */
+.rotate-n-15 {
+    transform: rotate(-15deg);
+}
+
+.text-xs {
+    font-size: .7rem;
+}
+
+.text-gray-800 {
+    color: #5a5c69;
+}
+
+.text-gray-600 {
+    color: #858796;
+}
+
+.text-gray-400 {
+    color: #d1d3e2;
+}
+
+.text-gray-300 {
+    color: #dddfeb;
+}
