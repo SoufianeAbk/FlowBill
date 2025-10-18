@@ -1,0 +1,131 @@
+﻿@model IEnumerable<FlowBill.Models.Bestelling>
+
+@{
+    ViewData["Title"] = "Bestellingen";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Bestellingen</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nieuwe Bestelling
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <div class="card shadow">
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.BestelNummer)</th>
+                                <th>Klant</th>
+                                <th>@Html.DisplayNameFor(model => model.BestelDatum)</th>
+                                <th>@Html.DisplayNameFor(model => model.Status)</th>
+                                <th>@Html.DisplayNameFor(model => model.Totaal)</th>
+                                <th>Factuur</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@Html.DisplayFor(modelItem => item.BestelNummer)</strong>
+                                    </td>
+                                    <td>@item.Klant.Bedrijfsnaam</td>
+                                    <td>@item.BestelDatum.ToString("dd-MM-yyyy")</td>
+                                    <td>
+                                        @switch (item.Status)
+                                        {
+                                            case FlowBill.Models.BestellingStatus.InBehandeling:
+                                                <span class="badge badge-warning">In behandeling</span>
+                                                break;
+                                            case FlowBill.Models.BestellingStatus.Goedgekeurd:
+                                                <span class="badge badge-success">Goedgekeurd</span>
+                                                break;
+                                            case FlowBill.Models.BestellingStatus.Verzonden:
+                                                <span class="badge badge-info">Verzonden</span>
+                                                break;
+                                            case FlowBill.Models.BestellingStatus.Afgeleverd:
+                                                <span class="badge badge-primary">Afgeleverd</span>
+                                                break;
+                                            case FlowBill.Models.BestellingStatus.Geannuleerd:
+                                                <span class="badge badge-danger">Geannuleerd</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td><strong>€ @item.Totaal.ToString("N2")</strong></td>
+                                    <td>
+                                        @if (item.Factuur != null)
+                                        {
+                                            <a asp-controller="Facturen" asp-action="Details" asp-route-id="@item.Factuur.Id"
+                                               class="badge badge-info">
+                                                @item.Factuur.FactuurNummer
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="GenereerFactuur" asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-warning">
+                                                Genereer
+                                            </a>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-info" title="Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-warning" title="Bewerken">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Nog geen bestellingen aanwezig.</p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Maak eerste bestelling
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/nl-NL.json"
+                },
+                "order": [[ 2, "desc" ]]
+            });
+        });
+    </script>
+}

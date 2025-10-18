@@ -1,0 +1,218 @@
+﻿@model FlowBill.Models.Bestelling
+
+@{
+    ViewData["Title"] = $"Bestelling {Model.BestelNummer}";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Bestelling Details</h1>
+        <div>
+            @if (Model.Factuur == null)
+            {
+                <a asp-action="GenereerFactuur" asp-route-id="@Model.Id" class="btn btn-success">
+                    <i class="fas fa-file-invoice"></i> Genereer Factuur
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Facturen" asp-action="Details" asp-route-id="@Model.Factuur.Id" class="btn btn-info">
+                    <i class="fas fa-file-invoice"></i> Bekijk Factuur
+                </a>
+            }
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Bewerken
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Terug
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Bestelling Details -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">Bestelling Informatie</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="font-weight-bold">Bestelnummer:</label>
+                            <p>@Model.BestelNummer</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="font-weight-bold">Besteldatum:</label>
+                            <p>@Model.BestelDatum.ToString("dd-MM-yyyy HH:mm")</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="font-weight-bold">Status:</label>
+                            <div>
+                                @switch (Model.Status)
+                                {
+                                    case FlowBill.Models.BestellingStatus.InBehandeling:
+                                        <span class="badge badge-warning">In behandeling</span>
+                                        break;
+                                    case FlowBill.Models.BestellingStatus.Goedgekeurd:
+                                        <span class="badge badge-success">Goedgekeurd</span>
+                                        break;
+                                    case FlowBill.Models.BestellingStatus.Verzonden:
+                                        <span class="badge badge-info">Verzonden</span>
+                                        break;
+                                    case FlowBill.Models.BestellingStatus.Afgeleverd:
+                                        <span class="badge badge-primary">Afgeleverd</span>
+                                        break;
+                                    case FlowBill.Models.BestellingStatus.Geannuleerd:
+                                        <span class="badge badge-danger">Geannuleerd</span>
+                                        break;
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="font-weight-bold">Totaalbedrag:</label>
+                            <p class="h5 text-success">€ @Model.Totaal.ToString("N2")</p>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Opmerkingen))
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="font-weight-bold">Opmerkingen:</label>
+                                <p>@Model.Opmerkingen</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Producten -->
+            <div class="card shadow">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">Producten</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Aantal</th>
+                                    <th>Prijs per stuk</th>
+                                    <th>BTW %</th>
+                                    <th class="text-right">Totaal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.BestellingItems)
+                                {
+                                    <tr>
+                                        <td>@item.Product.Naam</td>
+                                        <td>@item.Aantal</td>
+                                        <td>€ @item.PrijsPerStuk.ToString("N2")</td>
+                                        <td>@item.BTWPercentage%</td>
+                                        <td class="text-right">€ @item.Totaal.ToString("N2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-right">Subtotaal:</td>
+                                    <td class="text-right">€ @Model.SubTotaal.ToString("N2")</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-right">BTW:</td>
+                                    <td class="text-right">€ @Model.BTWBedrag.ToString("N2")</td>
+                                </tr>
+                                <tr class="font-weight-bold">
+                                    <td colspan="4" class="text-right">Totaal:</td>
+                                    <td class="text-right">€ @Model.Totaal.ToString("N2")</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Klant Info -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">Klantinformatie</h6>
+                </div>
+                <div class="card-body">
+                    <h5>@Model.Klant.Bedrijfsnaam</h5>
+                    <p class="mb-1">
+                        @if (!string.IsNullOrEmpty(Model.Klant.Contactpersoon))
+                        {
+                            <strong>Contact:</strong> 
+                            @Model.Klant.Contactpersoon
+                        
+                            <br>
+                        }
+                        <strong>Email:</strong> @Model.Klant.Email<br>
+                        <strong>Telefoon:</strong> @Model.Klant.Telefoon<br>
+                    </p>
+                    <hr>
+                    <address>
+                        @Model.Klant.Adres<br>
+                        @Model.Klant.Postcode @Model.Klant.Stad
+                    </address>
+                    <a asp-controller="Klanten" asp-action="Details" asp-route-id="@Model.KlantId"
+                       class="btn btn-sm btn-info">
+                        <i class="fas fa-user"></i> Bekijk klant
+                    </a>
+                </div>
+            </div>
+
+            <!-- Factuur Info -->
+            @if (Model.Factuur != null)
+            {
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-bold text-primary">Factuur Informatie</h6>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            <strong>Factuurnummer:</strong> @Model.Factuur.FactuurNummer<br>
+                            <strong>Datum:</strong> @Model.Factuur.FactuurDatum.ToString("dd-MM-yyyy")<br>
+                            <strong>Status:</strong>
+                            @switch (Model.Factuur.Status)
+                            {
+                                case FlowBill.Models.FactuurStatus.Openstaand:
+                                    <span class="badge badge-warning">Openstaand</span>
+                                    break;
+                                case FlowBill.Models.FactuurStatus.Betaald:
+                                    <span class="badge badge-success">Betaald</span>
+                                    break;
+                                case FlowBill.Models.FactuurStatus.Vervallen:
+                                    <span class="badge badge-danger">Vervallen</span>
+                                    break;
+                                case FlowBill.Models.FactuurStatus.Geannuleerd:
+                                    <span class="badge badge-secondary">Geannuleerd</span>
+                                    break;
+                            }
+                        </p>
+                        <a asp-controller="Facturen" asp-action="Details" asp-route-id="@Model.Factuur.Id"
+                           class="btn btn-sm btn-info">
+                            <i class="fas fa-file-invoice"></i> Bekijk factuur
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
