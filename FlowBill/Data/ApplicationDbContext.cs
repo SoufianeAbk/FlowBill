@@ -48,14 +48,71 @@ namespace FlowBill.Data
 
             // Seed data
             modelBuilder.Entity<Product>().HasData(
-                new Product { Id = 1, Naam = "Website ontwikkeling", Omschrijving = "Complete website ontwikkeling", Prijs = 2500.00m, BTWPercentage = 21, Voorraad = 100, SKU = "WEB001", IsActief = true },
-                new Product { Id = 2, Naam = "Hosting - Jaarlijks", Omschrijving = "Webhosting voor 1 jaar", Prijs = 120.00m, BTWPercentage = 21, Voorraad = 100, SKU = "HOST001", IsActief = true },
-                new Product { Id = 3, Naam = "SEO Optimalisatie", Omschrijving = "Zoekmotor optimalisatie", Prijs = 750.00m, BTWPercentage = 21, Voorraad = 100, SKU = "SEO001", IsActief = true },
-                new Product { Id = 4, Naam = "Logo ontwerp", Omschrijving = "Professioneel logo ontwerp", Prijs = 350.00m, BTWPercentage = 21, Voorraad = 100, SKU = "LOGO001", IsActief = true }
+                new Product
+                {
+                    Id = 1,
+                    Naam = "Website ontwikkeling",
+                    Omschrijving = "Complete website ontwikkeling",
+                    Prijs = 2500.00m,
+                    BTWPercentage = 21,
+                    Voorraad = 100,
+                    SKU = "WEB001",
+                    IsActief = true,
+                    AangemaaktOp = new DateTime(2024, 1, 1)
+                },
+                new Product
+                {
+                    Id = 2,
+                    Naam = "Hosting - Jaarlijks",
+                    Omschrijving = "Webhosting voor 1 jaar",
+                    Prijs = 120.00m,
+                    BTWPercentage = 21,
+                    Voorraad = 100,
+                    SKU = "HOST001",
+                    IsActief = true,
+                    AangemaaktOp = new DateTime(2024, 1, 1)
+                },
+                new Product
+                {
+                    Id = 3,
+                    Naam = "SEO Optimalisatie",
+                    Omschrijving = "Zoekmotor optimalisatie",
+                    Prijs = 750.00m,
+                    BTWPercentage = 21,
+                    Voorraad = 100,
+                    SKU = "SEO001",
+                    IsActief = true,
+                    AangemaaktOp = new DateTime(2024, 1, 1)
+                },
+                new Product
+                {
+                    Id = 4,
+                    Naam = "Logo ontwerp",
+                    Omschrijving = "Professioneel logo ontwerp",
+                    Prijs = 350.00m,
+                    BTWPercentage = 21,
+                    Voorraad = 100,
+                    SKU = "LOGO001",
+                    IsActief = true,
+                    AangemaaktOp = new DateTime(2024, 1, 1)
+                }
             );
 
             modelBuilder.Entity<Klant>().HasData(
-                new Klant { Id = 1, Bedrijfsnaam = "Voorbeeld Bedrijf B.V.", Contactpersoon = "Jan Jansen", Email = "info@voorbeeld.nl", Telefoon = "0612345678", Adres = "Voorbeeldstraat 1", Postcode = "1234 AB", Stad = "Amsterdam", BTWNummer = "NL123456789B01", KVKNummer = "12345678" }
+                new Klant
+                {
+                    Id = 1,
+                    Bedrijfsnaam = "Voorbeeld Bedrijf B.V.",
+                    Contactpersoon = "Jan Jansen",
+                    Email = "info@voorbeeld.nl",
+                    Telefoon = "0612345678",
+                    Adres = "Voorbeeldstraat 1",
+                    Postcode = "1234 AB",
+                    Stad = "Amsterdam",
+                    BTWNummer = "NL123456789B01",
+                    KVKNummer = "12345678",
+                    AangemaaktOp = new DateTime(2024, 1, 1)
+                }
             );
         }
     }
