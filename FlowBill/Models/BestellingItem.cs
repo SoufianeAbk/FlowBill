@@ -7,7 +7,8 @@ namespace FlowBill.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        // FIXED: Removed [Required] attribute to allow model binding during order creation
+        // BestellingId will be set automatically by EF Core when the relationship is saved
         public int BestellingId { get; set; }
 
         [Required]

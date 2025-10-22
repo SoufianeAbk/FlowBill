@@ -13,11 +13,16 @@ namespace FlowBill.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IFacturatieService _facturatieService;
+        private readonly ILogger<BestellingenController> _logger;
 
-        public BestellingenController(ApplicationDbContext context, IFacturatieService facturatieService)
+        public BestellingenController(
+            ApplicationDbContext context,
+            IFacturatieService facturatieService,
+            ILogger<BestellingenController> logger)
         {
             _context = context;
             _facturatieService = facturatieService;
+            _logger = logger;
         }
 
         // GET: Bestellingen
@@ -86,25 +91,56 @@ namespace FlowBill.Controllers
         {
             try
             {
-                // Log incoming data for debugging
-                Console.WriteLine($"KlantId: {bestelling.KlantId}");
-                Console.WriteLine($"Items count: {items?.Count ?? 0}");
+                // Enhanced logging for debugging
+                _logger.LogInformation("=== CREATE BESTELLING CALLED ===");
+                _logger.LogInformation($"KlantId: {bestelling.KlantId}");
+                _logger.LogInformation($"Items received: {items?.Count ?? 0}");
 
-                if (items != null)
+                if (items != null && items.Count > 0)
                 {
                     foreach (var item in items)
                     {
-                        Console.WriteLine($"Item - ProductId: {item.ProductId}, Aantal: {item.Aantal}");
+                        _logger.LogInformation($"Item - ProductId: {item.ProductId}, Aantal: {item.Aantal}");
                     }
+                }
+                else
+                {
+                    _logger.LogWarning("No items received in POST request!");
+                }
+
+                // Remove BestellingId validation errors since it's not sent from the form
+                ModelState.Remove("BestellingId");
+                foreach (var i in Enumerable.Range(0, items?.Count ?? 0))
+                {
+                    ModelState.Remove($"items[{i}].BestellingId");
+                    ModelState.Remove($"items[{i}].Id");
+                    ModelState.Remove($"items[{i}].PrijsPerStuk");
+                    ModelState.Remove($"items[{i}].BTWPercentage");
+                    ModelState.Remove($"items[{i}].Totaal");
                 }
 
                 // Check if items list is null or empty
                 if (items == null || items.Count == 0)
                 {
+                    _logger.LogError("No items in the order!");
                     ModelState.AddModelError("", "Er zijn geen producten toegevoegd aan de bestelling.");
+                    TempData["Error"] = "Voeg minimaal één product toe aan de bestelling.";
                 }
 
-                if (ModelState.IsValid)
+                // Log ModelState errors
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning("ModelState is invalid:");
+                    foreach (var modelState in ModelState)
+                    {
+                        foreach (var error in modelState.Value.Errors)
+                        {
+                            _logger.LogWarning($"  Key: {modelState.Key}, Error: {error.ErrorMessage}");
+                        }
+                    }
+                }
+
+                if (ModelState.IsValid && items != null && items.Count > 0)
                 {
                     bestelling.BestelNummer = GenereerBestelNummer();
                     bestelling.BestelDatum = DateTime.Now;
@@ -128,12 +164,17 @@ namespace FlowBill.Controllers
                             btwBedrag += item.Totaal * (product.BTWPercentage / 100m);
 
                             bestelling.BestellingItems.Add(item);
-                            Console.WriteLine($"Added item: {product.Naam}, Aantal: {item.Aantal}, Totaal: {item.Totaal}");
+                            _logger.LogInformation($"Added item: {product.Naam}, Aantal: {item.Aantal}, Totaal: {item.Totaal}");
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"Product with ID {item.ProductId} not found!");
                         }
                     }
 
                     if (bestelling.BestellingItems.Count == 0)
                     {
+                        _logger.LogError("No valid items after processing!");
                         TempData["Error"] = "Geen geldige producten gevonden in de bestelling.";
                         ViewData["KlantId"] = new SelectList(_context.Klanten, "Id", "Bedrijfsnaam", bestelling.KlantId);
                         var producten = await _context.Producten
@@ -148,51 +189,39 @@ namespace FlowBill.Controllers
                     bestelling.BTWBedrag = btwBedrag;
                     bestelling.Totaal = subtotaal + btwBedrag;
 
-                    Console.WriteLine($"Bestelling totals - Subtotaal: {subtotaal}, BTW: {btwBedrag}, Totaal: {bestelling.Totaal}");
+                    _logger.LogInformation($"Bestelling totals - Subtotaal: {subtotaal}, BTW: {btwBedrag}, Totaal: {bestelling.Totaal}");
 
                     _context.Add(bestelling);
                     await _context.SaveChangesAsync();
 
-                    Console.WriteLine($"Bestelling saved with ID: {bestelling.Id}");
+                    _logger.LogInformation($"✅ Bestelling saved successfully with ID: {bestelling.Id}");
 
                     // Genereer automatisch factuur
                     try
                     {
+                        _logger.LogInformation("Attempting to generate factuur...");
                         await _facturatieService.GenereerFactuur(bestelling.Id);
-                        Console.WriteLine("Factuur generated successfully");
-                        TempData["Success"] = "Bestelling succesvol aangemaakt en factuur gegenereerd!";
+                        _logger.LogInformation("✅ Factuur generated successfully");
+                        TempData["Success"] = $"Bestelling {bestelling.BestelNummer} succesvol aangemaakt en factuur gegenereerd!";
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error generating factuur: {ex.Message}");
-                        TempData["Warning"] = "Bestelling aangemaakt, maar er is een fout opgetreden bij het genereren van de factuur.";
+                        _logger.LogError(ex, "❌ Error generating factuur");
+                        TempData["Warning"] = $"Bestelling {bestelling.BestelNummer} aangemaakt, maar er is een fout opgetreden bij het genereren van de factuur: {ex.Message}";
                     }
 
                     return RedirectToAction(nameof(Index));
                 }
-                else
-                {
-                    // Log validation errors
-                    foreach (var modelState in ModelState.Values)
-                    {
-                        foreach (var error in modelState.Errors)
-                        {
-                            Console.WriteLine($"Validation error: {error.ErrorMessage}");
-                        }
-                    }
-                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception in Create: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                _logger.LogError(ex, "❌ Exception in Create method");
                 TempData["Error"] = $"Er is een fout opgetreden: {ex.Message}";
             }
 
-            // ⭐ BELANGRIJK: Voeg deze regels toe voor wanneer ModelState NIET valid is
+            // If we got here, something failed - reload the form
             ViewData["KlantId"] = new SelectList(_context.Klanten, "Id", "Bedrijfsnaam", bestelling.KlantId);
 
-            // Haal producten op met alle benodigde data (net zoals in GET)
             var productenList = await _context.Producten
                 .Where(p => p.IsActief)
                 .Select(p => new
@@ -212,14 +241,23 @@ namespace FlowBill.Controllers
         // GET: Bestellingen/GenereerFactuur/5
         public async Task<IActionResult> GenereerFactuur(int id)
         {
-            var factuur = await _facturatieService.GenereerFactuur(id);
-            if (factuur != null)
+            try
             {
-                TempData["Success"] = "Factuur succesvol gegenereerd en verzonden!";
-                return RedirectToAction("Details", "Facturen", new { id = factuur.Id });
+                var factuur = await _facturatieService.GenereerFactuur(id);
+                if (factuur != null)
+                {
+                    TempData["Success"] = "Factuur succesvol gegenereerd en verzonden!";
+                    return RedirectToAction("Details", "Facturen", new { id = factuur.Id });
+                }
+
+                TempData["Error"] = "Er is een fout opgetreden bij het genereren van de factuur.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error generating factuur for bestelling {id}");
+                TempData["Error"] = $"Er is een fout opgetreden: {ex.Message}";
             }
 
-            TempData["Error"] = "Er is een fout opgetreden bij het genereren van de factuur.";
             return RedirectToAction(nameof(Details), new { id });
         }
 
