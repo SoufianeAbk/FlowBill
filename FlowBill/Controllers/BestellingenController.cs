@@ -84,48 +84,116 @@ namespace FlowBill.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Bestelling bestelling, List<BestellingItem> items)
         {
-            if (ModelState.IsValid)
+            try
             {
-                bestelling.BestelNummer = GenereerBestelNummer();
-                bestelling.BestelDatum = DateTime.Now;
+                // Log incoming data for debugging
+                Console.WriteLine($"KlantId: {bestelling.KlantId}");
+                Console.WriteLine($"Items count: {items?.Count ?? 0}");
 
-                decimal subtotaal = 0;
-                decimal btwBedrag = 0;
-
-                foreach (var item in items.Where(i => i.ProductId > 0 && i.Aantal > 0))
+                if (items != null)
                 {
-                    var product = await _context.Producten.FindAsync(item.ProductId);
-                    if (product != null)
+                    foreach (var item in items)
                     {
-                        item.PrijsPerStuk = product.Prijs;
-                        item.BTWPercentage = product.BTWPercentage;
-                        item.Totaal = item.Aantal * product.Prijs;
-
-                        subtotaal += item.Totaal;
-                        btwBedrag += item.Totaal * (product.BTWPercentage / 100m);
-
-                        bestelling.BestellingItems.Add(item);
+                        Console.WriteLine($"Item - ProductId: {item.ProductId}, Aantal: {item.Aantal}");
                     }
                 }
 
-                bestelling.SubTotaal = subtotaal;
-                bestelling.BTWBedrag = btwBedrag;
-                bestelling.Totaal = subtotaal + btwBedrag;
+                // Check if items list is null or empty
+                if (items == null || items.Count == 0)
+                {
+                    ModelState.AddModelError("", "Er zijn geen producten toegevoegd aan de bestelling.");
+                }
 
-                _context.Add(bestelling);
-                await _context.SaveChangesAsync();
+                if (ModelState.IsValid)
+                {
+                    bestelling.BestelNummer = GenereerBestelNummer();
+                    bestelling.BestelDatum = DateTime.Now;
 
-                // Genereer automatisch factuur
-                await _facturatieService.GenereerFactuur(bestelling.Id);
+                    decimal subtotaal = 0;
+                    decimal btwBedrag = 0;
 
-                return RedirectToAction(nameof(Index));
+                    // Clear existing items to avoid duplicates
+                    bestelling.BestellingItems.Clear();
+
+                    foreach (var item in items.Where(i => i.ProductId > 0 && i.Aantal > 0))
+                    {
+                        var product = await _context.Producten.FindAsync(item.ProductId);
+                        if (product != null)
+                        {
+                            item.PrijsPerStuk = product.Prijs;
+                            item.BTWPercentage = product.BTWPercentage;
+                            item.Totaal = item.Aantal * product.Prijs;
+
+                            subtotaal += item.Totaal;
+                            btwBedrag += item.Totaal * (product.BTWPercentage / 100m);
+
+                            bestelling.BestellingItems.Add(item);
+                            Console.WriteLine($"Added item: {product.Naam}, Aantal: {item.Aantal}, Totaal: {item.Totaal}");
+                        }
+                    }
+
+                    if (bestelling.BestellingItems.Count == 0)
+                    {
+                        TempData["Error"] = "Geen geldige producten gevonden in de bestelling.";
+                        ViewData["KlantId"] = new SelectList(_context.Klanten, "Id", "Bedrijfsnaam", bestelling.KlantId);
+                        var producten = await _context.Producten
+                            .Where(p => p.IsActief)
+                            .Select(p => new { p.Id, p.Naam, p.Prijs, p.BTWPercentage })
+                            .ToListAsync();
+                        ViewBag.ProductenData = producten;
+                        return View(bestelling);
+                    }
+
+                    bestelling.SubTotaal = subtotaal;
+                    bestelling.BTWBedrag = btwBedrag;
+                    bestelling.Totaal = subtotaal + btwBedrag;
+
+                    Console.WriteLine($"Bestelling totals - Subtotaal: {subtotaal}, BTW: {btwBedrag}, Totaal: {bestelling.Totaal}");
+
+                    _context.Add(bestelling);
+                    await _context.SaveChangesAsync();
+
+                    Console.WriteLine($"Bestelling saved with ID: {bestelling.Id}");
+
+                    // Genereer automatisch factuur
+                    try
+                    {
+                        await _facturatieService.GenereerFactuur(bestelling.Id);
+                        Console.WriteLine("Factuur generated successfully");
+                        TempData["Success"] = "Bestelling succesvol aangemaakt en factuur gegenereerd!";
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error generating factuur: {ex.Message}");
+                        TempData["Warning"] = "Bestelling aangemaakt, maar er is een fout opgetreden bij het genereren van de factuur.";
+                    }
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // Log validation errors
+                    foreach (var modelState in ModelState.Values)
+                    {
+                        foreach (var error in modelState.Errors)
+                        {
+                            Console.WriteLine($"Validation error: {error.ErrorMessage}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in Create: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                TempData["Error"] = $"Er is een fout opgetreden: {ex.Message}";
             }
 
             // ⭐ BELANGRIJK: Voeg deze regels toe voor wanneer ModelState NIET valid is
             ViewData["KlantId"] = new SelectList(_context.Klanten, "Id", "Bedrijfsnaam", bestelling.KlantId);
 
             // Haal producten op met alle benodigde data (net zoals in GET)
-            var producten = await _context.Producten
+            var productenList = await _context.Producten
                 .Where(p => p.IsActief)
                 .Select(p => new
                 {
@@ -136,7 +204,7 @@ namespace FlowBill.Controllers
                 })
                 .ToListAsync();
 
-            ViewBag.ProductenData = producten; // ⭐ Dit ontbrak!
+            ViewBag.ProductenData = productenList;
 
             return View(bestelling);
         }

@@ -202,8 +202,8 @@
                             <input type="hidden" name="items[${cartItemIndex}].ProductId" value="${productId}">
                             <input type="hidden" name="items[${cartItemIndex}].Aantal" value="${aantal}" class="aantal-hidden">
                         </td>
-                        <td>€ ${product.prijs.toFixed(2)}</td>
-                        <td>${product.btw}%</td>
+                        <td data-prijs="${product.prijs}">€ ${product.prijs.toFixed(2)}</td>
+                        <td data-btw="${product.btw}">${product.btw}%</td>
                         <td class="text-right item-totaal">€ ${totaal.toFixed(2)}</td>
                         <td class="text-center">
                             <button type="button" class="btn btn-sm btn-danger remove-item" data-index="${cartItemIndex}">
@@ -232,7 +232,6 @@
 
             // Update aantal
             $(document).on('change', '.aantal-input', function() {
-                const index = $(this).data('index');
                 const nieuweAantal = parseInt($(this).val());
 
                 if (nieuweAantal < 1) {
@@ -245,7 +244,7 @@
 
                 // Herbereken item totaal
                 const row = $(this).closest('tr');
-                const prijs = parseFloat(row.find('td:eq(2)').text().replace('€ ', '').replace(',', '.'));
+                const prijs = parseFloat(row.find('td[data-prijs]').data('prijs'));
                 const totaal = nieuweAantal * prijs;
                 row.find('.item-totaal').text('€ ' + totaal.toFixed(2).replace('.', ','));
 
@@ -278,10 +277,11 @@
                     let totaalBTW = 0;
 
                     $('#cartItems tr').each(function() {
-                        const itemTotaalText = $(this).find('.item-totaal').text().replace('€ ', '').replace(',', '.');
-                        const itemTotaal = parseFloat(itemTotaalText);
-                        const btwPercentage = parseInt($(this).find('td:eq(3)').text());
+                        const aantal = parseInt($(this).find('.aantal-input').val());
+                        const prijs = parseFloat($(this).find('td[data-prijs]').data('prijs'));
+                        const btwPercentage = parseInt($(this).find('td[data-btw]').data('btw'));
 
+                        const itemTotaal = aantal * prijs;
                         subtotaal += itemTotaal;
                         totaalBTW += (itemTotaal * btwPercentage / 100);
                     });
@@ -310,6 +310,21 @@
                     return false;
                 }
 
+                // CRITICAL: Reindex all items to ensure continuous indices (0, 1, 2, etc.)
+                // This is essential for ASP.NET Core model binding to work correctly
+                console.log('Reindexing cart items before submission...');
+                $('#cartItems tr').each(function(newIndex) {
+                    console.log('Processing row index:', newIndex);
+                    $(this).find('input[name*="items["]').each(function() {
+                        var oldName = $(this).attr('name');
+                        // Replace old index with new continuous index
+                        var newName = oldName.replace(/items\[\d+\]/, 'items[' + newIndex + ']');
+                        $(this).attr('name', newName);
+                        console.log('Renamed:', oldName, '->', newName, 'Value:', $(this).val());
+                    });
+                });
+
+                console.log('Form submission proceeding...');
                 return true;
             });
 
