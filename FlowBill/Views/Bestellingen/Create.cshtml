@@ -53,12 +53,12 @@
                                     <label for="productSelect">Product</label>
                                     <select class="form-control" id="productSelect">
                                         <option value="">-- Selecteer een product --</option>
-                                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Producten)
+                                        @foreach (var product in ViewBag.ProductenData)
                                         {
-                                            <option value="@item.Value"
-                                                    data-prijs="@((await Html.ViewContext.HttpContext.RequestServices.GetService<FlowBill.Data.ApplicationDbContext>())?.Producten.Find(int.Parse(item.Value))?.Prijs ?? 0)"
-                                                    data-btw="@((await Html.ViewContext.HttpContext.RequestServices.GetService<FlowBill.Data.ApplicationDbContext>())?.Producten.Find(int.Parse(item.Value))?.BTWPercentage ?? 21)">
-                                                @item.Text
+                                            <option value="@product.Id"
+                                                    data-prijs="@product.Prijs"
+                                                    data-btw="@product.BTWPercentage">
+                                                @product.Naam
                                             </option>
                                         }
                                     </select>

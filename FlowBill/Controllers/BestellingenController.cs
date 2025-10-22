@@ -55,10 +55,23 @@ namespace FlowBill.Controllers
         }
 
         // GET: Bestellingen/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["KlantId"] = new SelectList(_context.Klanten, "Id", "Bedrijfsnaam");
-            ViewData["Producten"] = new SelectList(_context.Producten.Where(p => p.IsActief), "Id", "Naam");
+
+            // Haal producten op met alle benodigde data
+            var producten = await _context.Producten
+                .Where(p => p.IsActief)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Naam,
+                    p.Prijs,
+                    p.BTWPercentage
+                })
+                .ToListAsync();
+
+            ViewBag.ProductenData = producten;
 
             var bestelling = new Bestelling();
             bestelling.BestelNummer = GenereerBestelNummer();
@@ -108,8 +121,23 @@ namespace FlowBill.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // ⭐ BELANGRIJK: Voeg deze regels toe voor wanneer ModelState NIET valid is
             ViewData["KlantId"] = new SelectList(_context.Klanten, "Id", "Bedrijfsnaam", bestelling.KlantId);
-            ViewData["Producten"] = new SelectList(_context.Producten.Where(p => p.IsActief), "Id", "Naam");
+
+            // Haal producten op met alle benodigde data (net zoals in GET)
+            var producten = await _context.Producten
+                .Where(p => p.IsActief)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Naam,
+                    p.Prijs,
+                    p.BTWPercentage
+                })
+                .ToListAsync();
+
+            ViewBag.ProductenData = producten; // ⭐ Dit ontbrak!
+
             return View(bestelling);
         }
 
