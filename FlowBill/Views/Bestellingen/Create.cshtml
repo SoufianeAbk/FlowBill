@@ -1,0 +1,320 @@
+﻿@model FlowBill.Models.Bestelling
+
+@{
+    ViewData["Title"] = "Nieuwe Bestelling";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Nieuwe Bestelling Aanmaken</h1>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Terug naar overzicht
+        </a>
+    </div>
+
+    <form asp-action="Create" method="post" id="bestellingForm">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="row">
+            <!-- Klant Selectie -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-bold text-primary">Klant Informatie</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="KlantId" class="control-label"></label>
+                            <select asp-for="KlantId" class="form-control" asp-items="ViewBag.KlantId" id="klantSelect">
+                                <option value="">-- Selecteer een klant --</option>
+                            </select>
+                            <span asp-validation-for="KlantId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Opmerkingen" class="control-label"></label>
+                            <textarea asp-for="Opmerkingen" class="form-control" rows="4" placeholder="Eventuele opmerkingen bij deze bestelling..."></textarea>
+                            <span asp-validation-for="Opmerkingen" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Selectie -->
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-bold text-primary">Product Toevoegen</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label for="productSelect">Product</label>
+                                    <select class="form-control" id="productSelect">
+                                        <option value="">-- Selecteer een product --</option>
+                                        @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Producten)
+                                        {
+                                            <option value="@item.Value"
+                                                    data-prijs="@((await Html.ViewContext.HttpContext.RequestServices.GetService<FlowBill.Data.ApplicationDbContext>())?.Producten.Find(int.Parse(item.Value))?.Prijs ?? 0)"
+                                                    data-btw="@((await Html.ViewContext.HttpContext.RequestServices.GetService<FlowBill.Data.ApplicationDbContext>())?.Producten.Find(int.Parse(item.Value))?.BTWPercentage ?? 21)">
+                                                @item.Text
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="aantalInput">Aantal</label>
+                                    <input type="number" class="form-control" id="aantalInput" min="1" value="1">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <button type="button" class="btn btn-success btn-block" id="toevoegenBtn">
+                                        <i class="fas fa-plus"></i> Toevoegen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Winkelmandje -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-shopping-cart"></i> Winkelmandje
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="emptyCartMessage" class="text-center py-5">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Uw winkelmandje is leeg. Voeg producten toe om te beginnen.</p>
+                        </div>
+
+                        <div id="cartTableContainer" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="cartTable">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th style="width: 35%;">Product</th>
+                                            <th style="width: 15%;">Aantal</th>
+                                            <th style="width: 15%;">Prijs per stuk</th>
+                                            <th style="width: 10%;">BTW %</th>
+                                            <th style="width: 15%;" class="text-right">Totaal</th>
+                                            <th style="width: 10%;" class="text-center">Actie</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cartItems">
+                                        <!-- Items worden hier dynamisch toegevoegd -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4" class="text-right"><strong>Subtotaal (excl. BTW):</strong></td>
+                                            <td class="text-right"><strong id="subtotaalDisplay">€ 0,00</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-right"><strong>BTW:</strong></td>
+                                            <td class="text-right"><strong id="btwDisplay">€ 0,00</strong></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="table-success">
+                                            <td colspan="4" class="text-right"><strong>Totaal (incl. BTW):</strong></td>
+                                            <td class="text-right"><strong id="totaalDisplay">€ 0,00</strong></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" id="cartFooter" style="display: none;">
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-danger" id="clearCartBtn">
+                                <i class="fas fa-trash"></i> Winkelmandje Legen
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <i class="fas fa-check"></i> Bestelling Plaatsen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            let cartItemIndex = 0;
+            let producten = {};
+
+            // Laad product informatie
+            $('#productSelect option').each(function() {
+                if ($(this).val()) {
+                    producten[$(this).val()] = {
+                        id: $(this).val(),
+                        naam: $(this).text(),
+                        prijs: parseFloat($(this).data('prijs')) || 0,
+                        btw: parseInt($(this).data('btw')) || 21
+                    };
+                }
+            });
+
+            // Toevoegen aan winkelmandje
+            $('#toevoegenBtn').click(function() {
+                const productId = $('#productSelect').val();
+                const aantal = parseInt($('#aantalInput').val());
+
+                if (!productId) {
+                    alert('Selecteer eerst een product');
+                    return;
+                }
+
+                if (aantal < 1) {
+                    alert('Aantal moet minimaal 1 zijn');
+                    return;
+                }
+
+                const product = producten[productId];
+                const totaal = aantal * product.prijs;
+
+                // Voeg item toe aan winkelmandje
+                const row = `
+                    <tr data-index="${cartItemIndex}">
+                        <td>${product.naam}</td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm aantal-input"
+                                   value="${aantal}" min="1" data-index="${cartItemIndex}" style="width: 80px;">
+                            <input type="hidden" name="items[${cartItemIndex}].ProductId" value="${productId}">
+                            <input type="hidden" name="items[${cartItemIndex}].Aantal" value="${aantal}" class="aantal-hidden">
+                        </td>
+                        <td>€ ${product.prijs.toFixed(2)}</td>
+                        <td>${product.btw}%</td>
+                        <td class="text-right item-totaal">€ ${totaal.toFixed(2)}</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-danger remove-item" data-index="${cartItemIndex}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                $('#cartItems').append(row);
+                cartItemIndex++;
+
+                // Reset selectie
+                $('#productSelect').val('');
+                $('#aantalInput').val('1');
+
+                // Update display
+                updateCart();
+            });
+
+            // Verwijder item
+            $(document).on('click', '.remove-item', function() {
+                $(this).closest('tr').remove();
+                updateCart();
+            });
+
+            // Update aantal
+            $(document).on('change', '.aantal-input', function() {
+                const index = $(this).data('index');
+                const nieuweAantal = parseInt($(this).val());
+
+                if (nieuweAantal < 1) {
+                    $(this).val(1);
+                    return;
+                }
+
+                // Update hidden field
+                $(this).siblings('.aantal-hidden').val(nieuweAantal);
+
+                // Herbereken item totaal
+                const row = $(this).closest('tr');
+                const prijs = parseFloat(row.find('td:eq(2)').text().replace('€ ', '').replace(',', '.'));
+                const totaal = nieuweAantal * prijs;
+                row.find('.item-totaal').text('€ ' + totaal.toFixed(2).replace('.', ','));
+
+                updateCart();
+            });
+
+            // Leeg winkelmandje
+            $('#clearCartBtn').click(function() {
+                if (confirm('Weet u zeker dat u het winkelmandje wilt legen?')) {
+                    $('#cartItems').empty();
+                    updateCart();
+                }
+            });
+
+            // Update winkelmandje display en berekeningen
+            function updateCart() {
+                const itemCount = $('#cartItems tr').length;
+
+                if (itemCount === 0) {
+                    $('#emptyCartMessage').show();
+                    $('#cartTableContainer').hide();
+                    $('#cartFooter').hide();
+                } else {
+                    $('#emptyCartMessage').hide();
+                    $('#cartTableContainer').show();
+                    $('#cartFooter').show();
+
+                    // Bereken totalen
+                    let subtotaal = 0;
+                    let totaalBTW = 0;
+
+                    $('#cartItems tr').each(function() {
+                        const itemTotaalText = $(this).find('.item-totaal').text().replace('€ ', '').replace(',', '.');
+                        const itemTotaal = parseFloat(itemTotaalText);
+                        const btwPercentage = parseInt($(this).find('td:eq(3)').text());
+
+                        subtotaal += itemTotaal;
+                        totaalBTW += (itemTotaal * btwPercentage / 100);
+                    });
+
+                    const totaal = subtotaal + totaalBTW;
+
+                    // Update display
+                    $('#subtotaalDisplay').text('€ ' + subtotaal.toFixed(2).replace('.', ','));
+                    $('#btwDisplay').text('€ ' + totaalBTW.toFixed(2).replace('.', ','));
+                    $('#totaalDisplay').text('€ ' + totaal.toFixed(2).replace('.', ','));
+                }
+            }
+
+            // Validatie bij submit
+            $('#bestellingForm').submit(function(e) {
+                if (!$('#klantSelect').val()) {
+                    e.preventDefault();
+                    alert('Selecteer eerst een klant');
+                    $('#klantSelect').focus();
+                    return false;
+                }
+
+                if ($('#cartItems tr').length === 0) {
+                    e.preventDefault();
+                    alert('Voeg minimaal één product toe aan het winkelmandje');
+                    return false;
+                }
+
+                return true;
+            });
+
+            // Initiële update
+            updateCart();
+        });
+    </script>
+}
