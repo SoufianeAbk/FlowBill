@@ -46,7 +46,7 @@ namespace FlowBill.Data
                 .HasForeignKey(bi => bi.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Seed data
+            // Seed data - Products (keeping existing products)
             modelBuilder.Entity<Product>().HasData(
                 // Oorspronkelijke producten
                 new Product { Id = 1, Naam = "Website ontwikkeling", Omschrijving = "Complete website ontwikkeling", Prijs = 2500.00m, BTWPercentage = 21, Voorraad = 100, SKU = "WEB001", IsActief = true, AangemaaktOp = new DateTime(2024, 1, 1) },
@@ -140,6 +140,7 @@ namespace FlowBill.Data
                 new Product { Id = 65, Naam = "Webcam Logitech C920", Omschrijving = "Full HD webcam voor videobellen", Prijs = 79.00m, BTWPercentage = 21, Voorraad = 65, SKU = "ACC005", IsActief = true, AangemaaktOp = new DateTime(2024, 1, 1) }
             );
 
+            // Seed data - 10 Customers
             modelBuilder.Entity<Klant>().HasData(
                 new Klant
                 {
@@ -154,6 +155,132 @@ namespace FlowBill.Data
                     BTWNummer = "NL123456789B01",
                     KVKNummer = "12345678",
                     AangemaaktOp = new DateTime(2024, 1, 1)
+                },
+                new Klant
+                {
+                    Id = 2,
+                    Bedrijfsnaam = "TechSolutions Nederland",
+                    Contactpersoon = "Sophie de Vries",
+                    Email = "sophie@techsolutions.nl",
+                    Telefoon = "0687654321",
+                    Adres = "Innovatielaan 45",
+                    Postcode = "3045 BC",
+                    Stad = "Rotterdam",
+                    BTWNummer = "NL987654321B02",
+                    KVKNummer = "87654321",
+                    AangemaaktOp = new DateTime(2024, 1, 5)
+                },
+                new Klant
+                {
+                    Id = 3,
+                    Bedrijfsnaam = "Bakkerij Van Dam",
+                    Contactpersoon = "Pieter van Dam",
+                    Email = "pieter@bakkerijvandam.nl",
+                    Telefoon = "0623456789",
+                    Adres = "Marktplein 12",
+                    Postcode = "4567 CD",
+                    Stad = "Utrecht",
+                    BTWNummer = "NL234567890B03",
+                    KVKNummer = "23456789",
+                    AangemaaktOp = new DateTime(2024, 1, 10)
+                },
+                new Klant
+                {
+                    Id = 4,
+                    Bedrijfsnaam = "Green Energy Solutions",
+                    Contactpersoon = "Emma Mulder",
+                    Email = "emma@greenenergy.nl",
+                    Telefoon = "0634567890",
+                    Adres = "Duurzaamweg 78",
+                    Postcode = "2345 DE",
+                    Stad = "Den Haag",
+                    BTWNummer = "NL345678901B04",
+                    KVKNummer = "34567890",
+                    AangemaaktOp = new DateTime(2024, 1, 15)
+                },
+                new Klant
+                {
+                    Id = 5,
+                    Bedrijfsnaam = "Consultancy Partners",
+                    Contactpersoon = "Marco Visser",
+                    Email = "marco@consultancy.nl",
+                    Telefoon = "0645678901",
+                    Adres = "Businesspark 100",
+                    Postcode = "5678 EF",
+                    Stad = "Eindhoven",
+                    BTWNummer = "NL456789012B05",
+                    KVKNummer = "45678901",
+                    AangemaaktOp = new DateTime(2024, 1, 20)
+                },
+                new Klant
+                {
+                    Id = 6,
+                    Bedrijfsnaam = "Creative Media Group",
+                    Contactpersoon = "Lisa Bakker",
+                    Email = "lisa@creativemedia.nl",
+                    Telefoon = "0656789012",
+                    Adres = "Designstraat 23",
+                    Postcode = "6789 FG",
+                    Stad = "Groningen",
+                    BTWNummer = "NL567890123B06",
+                    KVKNummer = "56789012",
+                    AangemaaktOp = new DateTime(2024, 2, 1)
+                },
+                new Klant
+                {
+                    Id = 7,
+                    Bedrijfsnaam = "Bouwbedrijf Hendriks",
+                    Contactpersoon = "Tom Hendriks",
+                    Email = "tom@bouwbedrijf.nl",
+                    Telefoon = "0667890123",
+                    Adres = "Kraanweg 56",
+                    Postcode = "7890 GH",
+                    Stad = "Breda",
+                    BTWNummer = "NL678901234B07",
+                    KVKNummer = "67890123",
+                    AangemaaktOp = new DateTime(2024, 2, 5)
+                },
+                new Klant
+                {
+                    Id = 8,
+                    Bedrijfsnaam = "Restaurant De Gouden Lepel",
+                    Contactpersoon = "Anna de Wit",
+                    Email = "anna@goudenlepel.nl",
+                    Telefoon = "0678901234",
+                    Adres = "Marktstraat 8",
+                    Postcode = "8901 HI",
+                    Stad = "Maastricht",
+                    BTWNummer = "NL789012345B08",
+                    KVKNummer = "78901234",
+                    AangemaaktOp = new DateTime(2024, 2, 10)
+                },
+                new Klant
+                {
+                    Id = 9,
+                    Bedrijfsnaam = "Fitness First Nederland",
+                    Contactpersoon = "David Peters",
+                    Email = "david@fitnessfirst.nl",
+                    Telefoon = "0689012345",
+                    Adres = "Sportlaan 99",
+                    Postcode = "9012 IJ",
+                    Stad = "Nijmegen",
+                    BTWNummer = "NL890123456B09",
+                    KVKNummer = "89012345",
+                    AangemaaktOp = new DateTime(2024, 2, 15)
+                },
+                new Klant
+                {
+                    Id = 10,
+                    Bedrijfsnaam = "Online Marketing Pro",
+                    Contactpersoon = "Sarah van Leeuwen",
+                    Email = "sarah@onlinemarketing.nl",
+                    Telefoon = "0690123456",
+                    Adres = "Digitalweg 200",
+                    Postcode = "1012 JK",
+                    Stad = "Amsterdam",
+                    BTWNummer = "NL901234567B10",
+                    KVKNummer = "90123456",
+                    AangemaaktOp = new DateTime(2024, 2, 20)
                 }
             );
         }

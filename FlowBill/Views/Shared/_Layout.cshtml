@@ -78,6 +78,36 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
+                Informatie
+            </div>
+
+            <!-- Nav Item - Info Pages -->
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Info" asp-action="About">
+                    <i class="fas fa-fw fa-info-circle"></i>
+                    <span>Over Ons</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Info" asp-action="FAQ">
+                    <i class="fas fa-fw fa-question-circle"></i>
+                    <span>FAQ</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Info" asp-action="Delivery">
+                    <i class="fas fa-fw fa-truck"></i>
+                    <span>Levering & Retour</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
                 Instellingen
             </div>
 
@@ -151,7 +181,13 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>&copy; 2025 FlowBill - Geautomatiseerd Facturatiesysteem</span>
+                        <span>
+                            &copy; 2025 FlowBill - Geautomatiseerd Facturatiesysteem |
+                            <a asp-controller="Info" asp-action="About">Over Ons</a> |
+                            <a asp-controller="Info" asp-action="FAQ">FAQ</a> |
+                            <a asp-controller="Info" asp-action="Delivery">Levering & Retour</a> |
+                            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </span>
                     </div>
                 </div>
             </footer>

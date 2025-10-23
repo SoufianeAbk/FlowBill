@@ -1,0 +1,285 @@
+﻿@{
+    ViewData["Title"] = "Veelgestelde Vragen (FAQ)";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3">Veelgestelde Vragen (FAQ)</h1>
+            <p class="text-muted">Vind snel antwoorden op de meest gestelde vragen over FlowBill.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <!-- Algemeen -->
+                    <h4 class="text-primary mb-4">
+                        <i class="fas fa-info-circle"></i> Algemeen
+                    </h4>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Wat is FlowBill?</h5>
+                        <p>FlowBill is een geautomatiseerd facturatiesysteem dat speciaal is ontwikkeld voor kleine en middelgrote bedrijven. Met FlowBill kunt u eenvoudig klanten beheren, bestellingen plaatsen, facturen genereren en uw omzet monitoren.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Voor wie is FlowBill geschikt?</h5>
+                        <p>FlowBill is ideaal voor:</p>
+                        <ul>
+                            <li>ZZP'ers en freelancers</li>
+                            <li>Kleine bedrijven (1-50 medewerkers)</li>
+                            <li>Online winkels</li>
+                            <li>Dienstverleners</li>
+                            <li>Consultants en adviseurs</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Hoe kan ik beginnen met FlowBill?</h5>
+                        <p>U kunt direct aan de slag door:</p>
+                        <ol>
+                            <li>Uw eerste klant toe te voegen via het menu "Klanten"</li>
+                            <li>Producten of diensten aan te maken via "Producten"</li>
+                            <li>Een bestelling te plaatsen via "Bestellingen"</li>
+                            <li>De factuur wordt automatisch gegenereerd en verzonden</li>
+                        </ol>
+                    </div>
+
+                    <hr class="my-5">
+
+                    <!-- Bestellingen & Facturen -->
+                    <h4 class="text-primary mb-4">
+                        <i class="fas fa-file-invoice"></i> Bestellingen & Facturen
+                    </h4>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Hoe plaats ik een bestelling?</h5>
+                        <p>Ga naar <strong>Bestellingen → Nieuwe Bestelling</strong>. Selecteer een klant, voeg producten toe aan het winkelmandje en plaats de bestelling. De factuur wordt automatisch gegenereerd.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Worden facturen automatisch verzonden?</h5>
+                        <p>Ja! Zodra een bestelling is geplaatst, wordt er automatisch een professionele factuur gegenereerd in PDF-formaat en per e-mail naar de klant verzonden.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Kan ik een factuur opnieuw versturen?</h5>
+                        <p>Ja, ga naar <strong>Facturen</strong>, klik op de gewenste factuur en selecteer <strong>"Verstuur opnieuw"</strong> in het actiemenu.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Hoe markeer ik een factuur als betaald?</h5>
+                        <p>Open de factuur via het menu <strong>Facturen</strong> en klik op de knop <strong>"Markeer als betaald"</strong>. De status wordt direct bijgewerkt in het systeem.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Wat is het verschil tussen subtotaal, BTW en totaal?</h5>
+                        <ul>
+                            <li><strong>Subtotaal:</strong> De totale prijs exclusief BTW</li>
+                            <li><strong>BTW:</strong> Het BTW-bedrag dat berekend wordt over het subtotaal</li>
+                            <li><strong>Totaal:</strong> Subtotaal + BTW = het eindbe drag dat de klant moet betalen</li>
+                        </ul>
+                    </div>
+
+                    <hr class="my-5">
+
+                    <!-- Klanten & Producten -->
+                    <h4 class="text-primary mb-4">
+                        <i class="fas fa-users"></i> Klanten & Producten
+                    </h4>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Hoe voeg ik een nieuwe klant toe?</h5>
+                        <p>Ga naar <strong>Klanten → Nieuwe Klant</strong>. Vul de bedrijfsgegevens in zoals bedrijfsnaam, contactpersoon, e-mail, adres en BTW-nummer. Klik op <strong>Opslaan</strong> om de klant toe te voegen.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Kan ik mijn productcatalogus beheren?</h5>
+                        <p>Ja! Via <strong>Producten</strong> kunt u:</p>
+                        <ul>
+                            <li>Nieuwe producten of diensten toevoegen</li>
+                            <li>Prijzen en BTW-percentages instellen</li>
+                            <li>Voorraad bijhouden</li>
+                            <li>Producten activeren of deactiveren</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Wat moet ik invullen bij BTW-percentage?</h5>
+                        <p>In Nederland zijn de meest voorkomende BTW-percentages:</p>
+                        <ul>
+                            <li><strong>21%:</strong> Algemeen tarief (meeste producten en diensten)</li>
+                            <li><strong>9%:</strong> Verlaagd tarief (o.a. boeken, voedingsmiddelen, medicijnen)</li>
+                            <li><strong>0%:</strong> Vrijgesteld (bijv. export buiten de EU)</li>
+                        </ul>
+                    </div>
+
+                    <hr class="my-5">
+
+                    <!-- Rapporten & Analytics -->
+                    <h4 class="text-primary mb-4">
+                        <i class="fas fa-chart-line"></i> Rapporten & Analytics
+                    </h4>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Waar kan ik mijn omzet inzien?</h5>
+                        <p>Ga naar het <strong>Dashboard</strong> voor een overzicht van uw totale omzet, openstaande facturen en recent e bestellingen. Voor gedetailleerde rapporten gaat u naar <strong>Rapporten</strong>.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Kan ik facturen exporteren naar Excel?</h5>
+                        <p>Ja! Ga naar <strong>Rapporten → Export Facturen</strong>. U kunt een periode selecteren en alle facturen exporteren naar een Excel-bestand (.xlsx).</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Welke rapporten zijn beschikbaar?</h5>
+                        <p>FlowBill biedt verschillende rapporten:</p>
+                        <ul>
+                            <li><strong>Omzetrapport:</strong> Maandelijkse en jaarlijkse omzet</li>
+                            <li><strong>Klantrapport:</strong> Top 5 klanten op omzet</li>
+                            <li><strong>Productrapport:</strong> Meest verkochte producten</li>
+                            <li><strong>Openstaande facturen:</strong> Overzicht van onbetaalde facturen</li>
+                        </ul>
+                    </div>
+
+                    <hr class="my-5">
+
+                    <!-- Technische Vragen -->
+                    <h4 class="text-primary mb-4">
+                        <i class="fas fa-cog"></i> Technische Vragen
+                    </h4>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Is mijn data veilig?</h5>
+                        <p>Ja, FlowBill gebruikt moderne beveiligingstechnologie:</p>
+                        <ul>
+                            <li>SSL/TLS encryptie voor alle verbindingen</li>
+                            <li>Regelmatige database backups</li>
+                            <li>Beveiligde wachtwoorden met ASP.NET Identity</li>
+                            <li>Gehoste op betrouwbare servers in Nederland</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Welke browsers worden ondersteund?</h5>
+                        <p>FlowBill werkt optimaal in alle moderne browsers:</p>
+                        <ul>
+                            <li>Google Chrome (aanbevolen)</li>
+                            <li>Microsoft Edge</li>
+                            <li>Mozilla Firefox</li>
+                            <li>Safari (macOS/iOS)</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Kan ik FlowBill op mijn mobiele telefoon gebruiken?</h5>
+                        <p>Ja! FlowBill is volledig responsive en werkt uitstekend op smartphones en tablets. U heeft geen app nodig, de website past zich automatisch aan uw scherm aan.</p>
+                    </div>
+
+                    <hr class="my-5">
+
+                    <!-- Support -->
+                    <h4 class="text-primary mb-4">
+                        <i class="fas fa-life-ring"></i> Support & Contact
+                    </h4>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Hoe neem ik contact op met support?</h5>
+                        <p>Voor vragen of ondersteuning kunt u contact opnemen via:</p>
+                        <ul>
+                            <li><strong>E-mail:</strong> support@flowbill.nl</li>
+                            <li><strong>Telefoon:</strong> 020-1234567 (werkdagen 9:00-17:00)</li>
+                            <li><strong>Website:</strong> <a asp-controller="Info" asp-action="About">Over Ons pagina</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-weight-bold">Wat zijn de supporttijden?</h5>
+                        <p>Ons supportteam is bereikbaar op werkdagen van 9:00 tot 17:00 uur. We streven ernaar om binnen 24 uur te reageren op alle vragen.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-question-circle"></i> Vraag niet gevonden?
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p>Staat uw vraag er niet tussen? Neem gerust contact met ons op!</p>
+                    <a href="mailto:support@flowbill.nl" class="btn btn-primary btn-block">
+                        <i class="fas fa-envelope"></i> E-mail Support
+                    </a>
+                    <a href="tel:0201234567" class="btn btn-secondary btn-block mt-2">
+                        <i class="fas fa-phone"></i> Bel: 020-1234567
+                    </a>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-book"></i> Handige Links
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <a asp-controller="Info" asp-action="About">
+                                <i class="fas fa-chevron-right text-primary"></i> Over FlowBill
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Info" asp-action="Delivery">
+                                <i class="fas fa-chevron-right text-primary"></i> Levering & Retour
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Home" asp-action="Privacy">
+                                <i class="fas fa-chevron-right text-primary"></i> Privacybeleid
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Bestellingen" asp-action="Create">
+                                <i class="fas fa-chevron-right text-primary"></i> Nieuwe Bestelling
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="text-white">
+                        <i class="fas fa-lightbulb"></i> Tip van de dag
+                    </h5>
+                    <p class="mb-0">
+                        Gebruik de zoekfunctie in uw browserlijsten om snel de juiste klant of product te vinden. Druk op Ctrl+F (Windows) of Cmd+F (Mac).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    h5.font-weight-bold {
+        color: #2c3e50;
+        margin-bottom: 0.75rem;
+    }
+
+    .card-body p:last-child,
+    .card-body ul:last-child {
+        margin-bottom: 0;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+</style>

@@ -58,17 +58,19 @@ try
 
     var app = builder.Build();
 
-    // ✅ Only seed when running the actual app, not during EF Core design-time
-    if (app.Environment.EnvironmentName != "Development" || !app.Environment.ApplicationName.Contains("ef", StringComparison.OrdinalIgnoreCase))
+    // ✅ Check if we're running in EF Core design-time mode
+    var isDesignTime = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == null;
+
+    if (!isDesignTime)
     {
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
             try
             {
-                var context = services.GetRequiredService<ApplicationDbContext>();
-                // Optional: only migrate if not running design-time
-                context.Database.Migrate();
+                // Don't call Migrate() here - use Update-Database command instead
+                // context.Database.Migrate();
+
                 DbInitializer.Initialize(services).Wait();
                 Log.Information("Database initialized successfully");
             }

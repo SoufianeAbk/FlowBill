@@ -1,0 +1,401 @@
+﻿@{
+    ViewData["Title"] = "Levering & Retour";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3">Levering & Retour</h1>
+            <p class="text-muted">Alle informatie over verzending, levering en retourneren van producten.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Levering -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-shipping-fast"></i> Levering & Verzending
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="font-weight-bold text-dark">Levertijden</h6>
+                    <p>
+                        Wij streven ernaar om alle bestellingen zo snel mogelijk te verwerken en te verzenden.
+                        Hieronder vindt u onze standaard levertijden:
+                    </p>
+
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Producttype</th>
+                                    <th>Verwerkingstijd</th>
+                                    <th>Levertijd</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Fysieke producten (voorradig)</td>
+                                    <td>1-2 werkdagen</td>
+                                    <td>2-3 werkdagen</td>
+                                </tr>
+                                <tr>
+                                    <td>Fysieke producten (niet voorradig)</td>
+                                    <td>3-5 werkdagen</td>
+                                    <td>5-7 werkdagen</td>
+                                </tr>
+                                <tr>
+                                    <td>Digitale diensten</td>
+                                    <td>Direct na betaling</td>
+                                    <td>Direct beschikbaar</td>
+                                </tr>
+                                <tr>
+                                    <td>Op maat gemaakte diensten</td>
+                                    <td>Volgens afspraak</td>
+                                    <td>Volgens afspraak</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Let op:</strong> De aangegeven levertijden zijn indicatief. Bij drukte of externe omstandigheden
+                        kan de levertijd afwijken. U ontvangt altijd een track & trace code zodra uw bestelling is verzonden.
+                    </div>
+
+                    <h6 class="font-weight-bold text-dark mt-4">Verzendkosten</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-map-marker-alt text-primary"></i> Nederland
+                                    </h6>
+                                    <ul class="mb-0">
+                                        <li>Gratis verzending vanaf € 50,-</li>
+                                        <li>Onder € 50,-: € 4,95</li>
+                                        <li>Expreslevering: € 9,95</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-globe text-primary"></i> België & Duitsland
+                                    </h6>
+                                    <ul class="mb-0">
+                                        <li>Gratis verzending vanaf € 75,-</li>
+                                        <li>Onder € 75,-: € 7,95</li>
+                                        <li>Levertijd: 3-5 werkdagen</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="font-weight-bold text-dark mt-4">Track & Trace</h6>
+                    <p>
+                        Zodra uw bestelling is verzonden, ontvangt u per e-mail een track & trace code.
+                        Hiermee kunt u uw zending real-time volgen. De track & trace link is ook terug te vinden
+                        in uw FlowBill account onder "Mijn Bestellingen".
+                    </p>
+
+                    <h6 class="font-weight-bold text-dark mt-4">Leveringsopties</h6>
+                    <ul>
+                        <li><strong>Standaard levering:</strong> Levering op werkdagen tussen 9:00 en 18:00 uur</li>
+                        <li><strong>Avondlevering:</strong> Levering tussen 18:00 en 21:00 uur (€ 2,50 extra)</li>
+                        <li><strong>Weekend levering:</strong> Levering op zaterdag (€ 5,00 extra)</li>
+                        <li><strong>Afhaalpunt:</strong> Ophalen bij een PostNL afhaalpunt (gratis)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Retourneren -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-undo-alt"></i> Retourneren & Annuleren
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="font-weight-bold text-dark">Retourbeleid</h6>
+                    <p>
+                        Bij FlowBill kunt u binnen <strong>14 dagen na ontvangst</strong> van uw bestelling
+                        gebruik maken van uw herroepingsrecht, conform de wet. Dit houdt in dat u zonder
+                        opgave van redenen het product kunt retourneren.
+                    </p>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Belangrijke voorwaarden:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Het product moet onbeschadigd en in originele verpakking worden geretourneerd</li>
+                            <li>Retourzendingen zijn voor rekening van de klant, tenzij het product defect is</li>
+                            <li>Digitale producten en op maat gemaakte diensten kunnen niet worden geretourneerd</li>
+                            <li>Verzegelde producten die zijn geopend (software, hygiëneproducten) kunnen niet worden geretourneerd</li>
+                        </ul>
+                    </div>
+
+                    <h6 class="font-weight-bold text-dark mt-4">Hoe Retourneren?</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
+                                     style="width: 60px; height: 60px;">
+                                    <span class="h4 mb-0">1</span>
+                                </div>
+                                <h6 class="font-weight-bold">Meld Retour Aan</h6>
+                                <p class="small text-muted">
+                                    Neem contact op via e-mail of telefoon en vermeld uw ordernummer
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
+                                     style="width: 60px; height: 60px;">
+                                    <span class="h4 mb-0">2</span>
+                                </div>
+                                <h6 class="font-weight-bold">Ontvang Retourlabel</h6>
+                                <p class="small text-muted">
+                                    U ontvangt binnen 24 uur een retourlabel per e-mail
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
+                                     style="width: 60px; height: 60px;">
+                                    <span class="h4 mb-0">3</span>
+                                </div>
+                                <h6 class="font-weight-bold">Verstuur Pakket</h6>
+                                <p class="small text-muted">
+                                    Plak het retourlabel op het pakket en breng het naar een PostNL punt
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="font-weight-bold text-dark mt-4">Terugbetaling</h6>
+                    <p>
+                        Zodra wij uw retourzending hebben ontvangen en gecontroleerd, ontvangt u binnen
+                        <strong>14 dagen</strong> het volledige aankoopbedrag terug op de rekening waarmee
+                        u heeft betaald. Verzendkosten worden alleen terugbetaald indien het product defect
+                        was of als wij een fout hebben gemaakt.
+                    </p>
+
+                    <h6 class="font-weight-bold text-dark mt-4">Ruilen</h6>
+                    <p>
+                        Wilt u een product ruilen voor een andere maat of variant? Neem dan contact met ons op.
+                        Wij zorgen er graag voor dat u het juiste product ontvangt. Bij ruilen betaalt u geen extra verzendkosten.
+                    </p>
+
+                    <h6 class="font-weight-bold text-dark mt-4">Defecte Producten</h6>
+                    <p>
+                        Heeft u een defect product ontvangen? Neem dan direct contact met ons op via
+                        <a href="mailto:support@flowbill.nl">support@flowbill.nl</a> of bel 020-1234567.
+                        Wij zorgen voor een snelle vervanging of terugbetaling. Bij defecte producten
+                        komen alle kosten voor onze rekening.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Klachten -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-exclamation-circle"></i> Klachten & Geschillen
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Wij doen er alles aan om u optimaal te bedienen. Mocht u toch niet tevreden zijn
+                        over onze service of een product, dan horen we dat graag van u. Neem contact met
+                        ons op en we zoeken samen naar een passende oplossing.
+                    </p>
+
+                    <h6 class="font-weight-bold text-dark">Klachtenprocedure</h6>
+                    <ol>
+                        <li>Meld uw klacht binnen 7 dagen via <a href="mailto:klachten@flowbill.nl">klachten@flowbill.nl</a></li>
+                        <li>Vermeld uw ordernummer en omschrijf de klacht zo duidelijk mogelijk</li>
+                        <li>U ontvangt binnen 48 uur een ontvangstbevestiging</li>
+                        <li>Wij nemen binnen 7 werkdagen contact met u op met een oplossing</li>
+                    </ol>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-balance-scale"></i>
+                        FlowBill is aangesloten bij de <strong>Geschillencommissie</strong>. Als wij er samen
+                        niet uitkomen, kunt u uw klacht voorleggen aan deze onafhankelijke instantie.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Garantie -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-certificate"></i> Garantie
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Op alle door ons geleverde producten geldt de wettelijke garantie. Dit betekent dat
+                        het product moet voldoen aan wat u redelijkerwijs mag verwachten op basis van de
+                        productomschrijving.
+                    </p>
+
+                    <h6 class="font-weight-bold text-dark">Garantieperiode</h6>
+                    <ul>
+                        <li><strong>Consumentenelektronica:</strong> 2 jaar fabrieksgarantie</li>
+                        <li><strong>Software licenties:</strong> Levenslang (volgens licentievoorwaarden)</li>
+                        <li><strong>Fysieke producten:</strong> 2 jaar wettelijke garantie</li>
+                        <li><strong>Diensten:</strong> Volgens service level agreement</li>
+                    </ul>
+
+                    <p class="mb-0">
+                        <strong>Let op:</strong> Schade door oneigenlijk gebruik, verwaarlozing of normale slijtage
+                        valt niet onder de garantie. Voor sommige producten bieden fabrikanten verlengde garantie aan.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Contact Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-headset"></i> Hulp Nodig?
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p>Heeft u vragen over levering of retourneren? Neem gerust contact op!</p>
+
+                    <div class="mb-3">
+                        <strong><i class="fas fa-envelope text-primary"></i> E-mail</strong><br>
+                        <a href="mailto:support@flowbill.nl">support@flowbill.nl</a><br>
+                        <small class="text-muted">Reactie binnen 24 uur</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong><i class="fas fa-phone text-primary"></i> Telefoon</strong><br>
+                        <a href="tel:0201234567">020-1234567</a><br>
+                        <small class="text-muted">Ma-Vr: 9:00 - 17:00</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong><i class="fas fa-comment text-primary"></i> Live Chat</strong><br>
+                        <small class="text-muted">Beschikbaar op werkdagen</small>
+                    </div>
+
+                    <a href="mailto:support@flowbill.nl" class="btn btn-primary btn-block">
+                        <i class="fas fa-paper-plane"></i> Stel een Vraag
+                    </a>
+                </div>
+            </div>
+
+            <!-- Retouradres -->
+            <div class="card shadow mb-4 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-map-marked-alt"></i> Retouradres
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>FlowBill B.V.</strong></p>
+                    <p class="mb-2">
+                        T.a.v. Retourzendingen<br>
+                        Hoofdstraat 123<br>
+                        1234 AB Amsterdam<br>
+                        Nederland
+                    </p>
+                    <div class="alert alert-warning mb-0">
+                        <small>
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Let op:</strong> Gebruik altijd het retourlabel dat u van ons ontvangt.
+                            Pakketten zonder retourlabel kunnen niet worden verwerkt.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-link"></i> Handige Links
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <a asp-controller="Info" asp-action="FAQ">
+                                <i class="fas fa-chevron-right text-primary"></i> Veelgestelde Vragen
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Info" asp-action="About">
+                                <i class="fas fa-chevron-right text-primary"></i> Over FlowBill
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Home" asp-action="Privacy">
+                                <i class="fas fa-chevron-right text-primary"></i> Privacybeleid
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Bestellingen" asp-action="Index">
+                                <i class="fas fa-chevron-right text-primary"></i> Mijn Bestellingen
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Trust Indicators -->
+            <div class="card shadow bg-success text-white">
+                <div class="card-body text-center">
+                    <h5 class="text-white mb-3">
+                        <i class="fas fa-shield-alt"></i> Veilig Bestellen
+                    </h5>
+                    <div class="row">
+                        <div class="col-6 border-right border-white">
+                            <i class="fas fa-lock fa-2x mb-2"></i>
+                            <p class="small mb-0">SSL Beveiligd</p>
+                        </div>
+                        <div class="col-6">
+                            <i class="fas fa-check-circle fa-2x mb-2"></i>
+                            <p class="small mb-0">Betrouwbaar</p>
+                        </div>
+                    </div>
+                    <hr class="bg-white">
+                    <p class="small mb-0">
+                        <i class="fas fa-award"></i>
+                        9.2/10 Klantbeoordeling
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        border-bottom: 2px solid #4e73df;
+    }
+
+    .card-body h6.font-weight-bold {
+        color: #2c3e50;
+    }
+
+    .alert ul {
+        margin-bottom: 0;
+        padding-left: 1.5rem;
+    }
+</style>
