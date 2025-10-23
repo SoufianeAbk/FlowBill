@@ -1,11 +1,10 @@
-using FlowBill.Data;
+﻿using FlowBill.Data;
 using FlowBill.Middleware;
 using FlowBill.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-// Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Information)
@@ -24,10 +23,8 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
-    // Add Serilog
     builder.Host.UseSerilog();
 
-    // Add services to the container.
     builder.Services.AddControllersWithViews();
 
     // Database Context
@@ -43,17 +40,15 @@ try
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequireUppercase = false;
     })
-        .AddRoles<IdentityRole>()
-        .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
     // Custom services
     builder.Services.AddScoped<IFacturatieService, FacturatieService>();
     builder.Services.AddScoped<IBackupService, BackupService>();
 
-    // Add memory cache
+    // Add memory cache and session
     builder.Services.AddMemoryCache();
-
-    // Add session
     builder.Services.AddSession(options =>
     {
         options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -63,41 +58,39 @@ try
 
     var app = builder.Build();
 
-    // Seed database
-    using (var scope = app.Services.CreateScope())
+    // ✅ Only seed when running the actual app, not during EF Core design-time
+    if (app.Environment.EnvironmentName != "Development" || !app.Environment.ApplicationName.Contains("ef", StringComparison.OrdinalIgnoreCase))
     {
-        var services = scope.ServiceProvider;
-        try
+        using (var scope = app.Services.CreateScope())
         {
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            await context.Database.MigrateAsync();
-            await DbInitializer.Initialize(services);
-            Log.Information("Database initialized successfully");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "An error occurred while seeding the database");
+            var services = scope.ServiceProvider;
+            try
+            {
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                // Optional: only migrate if not running design-time
+                context.Database.Migrate();
+                DbInitializer.Initialize(services).Wait();
+                Log.Information("Database initialized successfully");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while seeding the database");
+            }
         }
     }
 
-    // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
     {
         app.UseExceptionHandler("/Home/Error");
         app.UseHsts();
     }
 
-    // Custom error handling middleware
     app.UseErrorHandling();
-
     app.UseHttpsRedirection();
     app.UseStaticFiles();
-
     app.UseSerilogRequestLogging();
-
     app.UseRouting();
     app.UseSession();
-
     app.UseAuthentication();
     app.UseAuthorization();
 
