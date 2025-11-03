@@ -27,9 +27,16 @@ try
 
     builder.Services.AddControllersWithViews();
 
-    // Database Context
+    // Database Context with retry logic for transient failures
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+            sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null);
+            }));
 
     // Identity
     builder.Services.AddDefaultIdentity<IdentityUser>(options =>
@@ -68,10 +75,13 @@ try
             var services = scope.ServiceProvider;
             try
             {
-                // Don't call Migrate() here - use Update-Database command instead
-                // context.Database.Migrate();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                DbInitializer.Initialize(services).Wait();
+                // Apply pending migrations
+                await context.Database.MigrateAsync();
+                Log.Information("Database migrations applied successfully");
+
+                await DbInitializer.Initialize(services);
                 Log.Information("Database initialized successfully");
             }
             catch (Exception ex)
