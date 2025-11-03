@@ -4,8 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using MailKit.Net.Smtp;
-using MimeKit;
+using System.Text;
 
 namespace FlowBill.Services
 {
@@ -14,12 +13,18 @@ namespace FlowBill.Services
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<FacturatieService> _logger;
 
-        public FacturatieService(ApplicationDbContext context, IConfiguration configuration, IWebHostEnvironment environment)
+        public FacturatieService(
+            ApplicationDbContext context,
+            IConfiguration configuration,
+            IWebHostEnvironment environment,
+            ILogger<FacturatieService> logger)
         {
             _context = context;
             _configuration = configuration;
             _environment = environment;
+            _logger = logger;
 
             // QuestPDF License
             QuestPDF.Settings.License = LicenseType.Community;
@@ -89,7 +94,7 @@ namespace FlowBill.Services
             factuur.PDFPad = $"/facturen/{factuur.FactuurNummer}.pdf";
             await _context.SaveChangesAsync();
 
-            // Verstuur email
+            // Verstuur email (lokaal gesimuleerd)
             await VerstuurFactuurEmail(factuur);
 
             return factuur;
@@ -240,44 +245,100 @@ namespace FlowBill.Services
                 if (factuurMetData == null)
                     return false;
 
-                var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("FlowBill", _configuration["Email:From"]));
-                message.To.Add(new MailboxAddress(
-                    factuurMetData.Bestelling.Klant.Contactpersoon ?? factuurMetData.Bestelling.Klant.Bedrijfsnaam,
-                    factuurMetData.Bestelling.Klant.Email));
-                message.Subject = $"Factuur {factuurMetData.FactuurNummer} - FlowBill";
-
-                var builder = new BodyBuilder();
-                builder.HtmlBody = $@"
-                    <h2>Beste {factuurMetData.Bestelling.Klant.Contactpersoon ?? factuurMetData.Bestelling.Klant.Bedrijfsnaam},</h2>
-                    <p>Bijgaand treft u factuur {factuurMetData.FactuurNummer} aan.</p>
-                    <p><strong>Factuurbedrag:</strong> € {factuurMetData.Totaal:F2}<br/>
-                    <strong>Vervaldatum:</strong> {factuurMetData.VervalDatum:dd-MM-yyyy}</p>
-                    <p>Gelieve het bedrag voor de vervaldatum over te maken op:<br/>
-                    IBAN: NL12 ABNA 0123 4567 89<br/>
-                    Onder vermelding van: {factuurMetData.FactuurNummer}</p>
-                    <p>Met vriendelijke groet,<br/>
-                    FlowBill</p>
-                ";
-
-                // Voeg PDF toe als bijlage
-                var pdfBytes = await GenereerPDF(factuurMetData);
-                builder.Attachments.Add($"{factuurMetData.FactuurNummer}.pdf", pdfBytes, ContentType.Parse("application/pdf"));
-
-                message.Body = builder.ToMessageBody();
-
-                using (var client = new SmtpClient())
+                // IN DEVELOPMENT/STAGING: Save email locally instead of sending
+                if (_environment.IsDevelopment() || _environment.IsStaging())
                 {
-                    await client.ConnectAsync(_configuration["Email:Host"],
-                        int.Parse(_configuration["Email:Port"]),
-                        bool.Parse(_configuration["Email:UseSsl"]));
+                    // Create staged emails folder
+                    var emailFolder = Path.Combine(_environment.WebRootPath, "staged-emails");
+                    if (!Directory.Exists(emailFolder))
+                        Directory.CreateDirectory(emailFolder);
 
-                    await client.AuthenticateAsync(
-                        _configuration["Email:Username"],
-                        _configuration["Email:Password"]);
+                    // Generate email content
+                    var emailContent = new StringBuilder();
+                    emailContent.AppendLine("================== SIMULATED EMAIL ==================");
+                    emailContent.AppendLine($"From: FlowBill <{_configuration["Email:From"]}>");
+                    emailContent.AppendLine($"To: {factuurMetData.Bestelling.Klant.Contactpersoon ?? factuurMetData.Bestelling.Klant.Bedrijfsnaam} <{factuurMetData.Bestelling.Klant.Email}>");
+                    emailContent.AppendLine($"Subject: Factuur {factuurMetData.FactuurNummer} - FlowBill");
+                    emailContent.AppendLine($"Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                    emailContent.AppendLine("======================================================");
+                    emailContent.AppendLine();
+                    emailContent.AppendLine("HTML BODY:");
+                    emailContent.AppendLine($@"
+<h2>Beste {factuurMetData.Bestelling.Klant.Contactpersoon ?? factuurMetData.Bestelling.Klant.Bedrijfsnaam},</h2>
+<p>Bijgaand treft u factuur {factuurMetData.FactuurNummer} aan.</p>
+<p><strong>Factuurbedrag:</strong> € {factuurMetData.Totaal:F2}<br/>
+<strong>Vervaldatum:</strong> {factuurMetData.VervalDatum:dd-MM-yyyy}</p>
+<p>Gelieve het bedrag voor de vervaldatum over te maken op:<br/>
+IBAN: NL12 ABNA 0123 4567 89<br/>
+Onder vermelding van: {factuurMetData.FactuurNummer}</p>
+<p>Met vriendelijke groet,<br/>
+FlowBill</p>
+                    ");
+                    emailContent.AppendLine();
+                    emailContent.AppendLine("======================================================");
+                    emailContent.AppendLine($"ATTACHMENT: {factuurMetData.FactuurNummer}.pdf");
+                    emailContent.AppendLine($"PDF Location: {factuurMetData.PDFPad}");
+                    emailContent.AppendLine("======================================================");
 
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
+                    // Save email content to file
+                    var emailFileName = $"{factuurMetData.FactuurNummer}_email_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+                    var emailPath = Path.Combine(emailFolder, emailFileName);
+                    await File.WriteAllTextAsync(emailPath, emailContent.ToString());
+
+                    // Log the simulated email
+                    _logger.LogInformation($"📧 SIMULATED EMAIL: Factuur {factuurMetData.FactuurNummer} email saved to: {emailPath}");
+                    _logger.LogInformation($"   To: {factuurMetData.Bestelling.Klant.Email}");
+                    _logger.LogInformation($"   Subject: Factuur {factuurMetData.FactuurNummer} - FlowBill");
+                    _logger.LogInformation($"   PDF: {factuurMetData.PDFPad}");
+
+                    // Also create an HTML preview
+                    var htmlContent = $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Email Preview - {factuurMetData.FactuurNummer}</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }}
+        .email-header {{ background: #f5f5f5; padding: 20px; border-radius: 5px; margin-bottom: 20px; }}
+        .email-body {{ padding: 20px; border: 1px solid #ddd; border-radius: 5px; }}
+        .attachment {{ background: #e8f4f8; padding: 10px; margin-top: 20px; border-radius: 5px; }}
+    </style>
+</head>
+<body>
+    <div class='email-header'>
+        <h3>📧 Simulated Email (Development Mode)</h3>
+        <p><strong>From:</strong> FlowBill &lt;{_configuration["Email:From"]}&gt;</p>
+        <p><strong>To:</strong> {factuurMetData.Bestelling.Klant.Contactpersoon ?? factuurMetData.Bestelling.Klant.Bedrijfsnaam} &lt;{factuurMetData.Bestelling.Klant.Email}&gt;</p>
+        <p><strong>Subject:</strong> Factuur {factuurMetData.FactuurNummer} - FlowBill</p>
+        <p><strong>Date:</strong> {DateTime.Now:yyyy-MM-dd HH:mm:ss}</p>
+    </div>
+    <div class='email-body'>
+        <h2>Beste {factuurMetData.Bestelling.Klant.Contactpersoon ?? factuurMetData.Bestelling.Klant.Bedrijfsnaam},</h2>
+        <p>Bijgaand treft u factuur {factuurMetData.FactuurNummer} aan.</p>
+        <p><strong>Factuurbedrag:</strong> € {factuurMetData.Totaal:F2}<br/>
+        <strong>Vervaldatum:</strong> {factuurMetData.VervalDatum:dd-MM-yyyy}</p>
+        <p>Gelieve het bedrag voor de vervaldatum over te maken op:<br/>
+        IBAN: NL12 ABNA 0123 4567 89<br/>
+        Onder vermelding van: {factuurMetData.FactuurNummer}</p>
+        <p>Met vriendelijke groet,<br/>
+        FlowBill</p>
+    </div>
+    <div class='attachment'>
+        <p><strong>📎 Attachment:</strong> <a href='{factuurMetData.PDFPad}'>{factuurMetData.FactuurNummer}.pdf</a></p>
+    </div>
+</body>
+</html>";
+
+                    var htmlFileName = $"{factuurMetData.FactuurNummer}_email_{DateTime.Now:yyyyMMdd_HHmmss}.html";
+                    var htmlPath = Path.Combine(emailFolder, htmlFileName);
+                    await File.WriteAllTextAsync(htmlPath, htmlContent);
+                }
+                else
+                {
+                    // PRODUCTION: Real email sending would go here
+                    // For now, we'll just log it
+                    _logger.LogWarning("Email sending is not implemented for production. Configure SMTP settings in appsettings.json");
                 }
 
                 // Update factuur status
@@ -287,8 +348,9 @@ namespace FlowBill.Services
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error sending/staging factuur email");
                 return false;
             }
         }
