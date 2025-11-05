@@ -61,9 +61,6 @@ namespace FlowBill.Data
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // Check if we're using SQLite to handle DateTime properly
-            var isSQLite = Database.ProviderName?.Contains("Sqlite") ?? false;
-
             // Seed data - Product Categories
             var categories = new List<ProductCategory>
             {
@@ -110,7 +107,7 @@ namespace FlowBill.Data
                     Voorraad = 100,
                     SKU = "WEB001",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -123,7 +120,7 @@ namespace FlowBill.Data
                     Voorraad = 100,
                     SKU = "HOST001",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -136,7 +133,7 @@ namespace FlowBill.Data
                     Voorraad = 100,
                     SKU = "SEO001",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -149,7 +146,7 @@ namespace FlowBill.Data
                     Voorraad = 100,
                     SKU = "LOGO001",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 
                 // Games (Categorie 2)
@@ -164,7 +161,7 @@ namespace FlowBill.Data
                     Voorraad = 45,
                     SKU = "GAME001",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -177,7 +174,7 @@ namespace FlowBill.Data
                     Voorraad = 60,
                     SKU = "GAME002",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -190,7 +187,7 @@ namespace FlowBill.Data
                     Voorraad = 35,
                     SKU = "GAME003",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -203,7 +200,7 @@ namespace FlowBill.Data
                     Voorraad = 50,
                     SKU = "GAME004",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
 
                 // Sport (Categorie 3)
@@ -218,7 +215,7 @@ namespace FlowBill.Data
                     Voorraad = 75,
                     SKU = "SPORT001",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -231,7 +228,7 @@ namespace FlowBill.Data
                     Voorraad = 40,
                     SKU = "SPORT002",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -244,7 +241,7 @@ namespace FlowBill.Data
                     Voorraad = 55,
                     SKU = "SPORT003",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Product
                 {
@@ -257,7 +254,7 @@ namespace FlowBill.Data
                     Voorraad = 65,
                     SKU = "SPORT004",
                     IsActief = true,
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 }
             };
 
@@ -278,7 +275,7 @@ namespace FlowBill.Data
                     Stad = "Amsterdam",
                     BTWNummer = "NL123456789B01",
                     KVKNummer = "12345678",
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 1)
+                    AangemaaktOp = new DateTime(2024, 1, 1)
                 },
                 new Klant
                 {
@@ -292,7 +289,7 @@ namespace FlowBill.Data
                     Stad = "Rotterdam",
                     BTWNummer = "NL987654321B02",
                     KVKNummer = "87654321",
-                    AangemaaktOp = isSQLite ? DateTime.UtcNow : new DateTime(2024, 1, 5)
+                    AangemaaktOp = new DateTime(2024, 1, 5)
                 }
             };
 
