@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FlowBill.Data;
 using FlowBill.Models;
@@ -17,9 +18,19 @@ namespace FlowBill.Controllers
         }
 
         // GET: Producten
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId)
         {
-            return View(await _context.Producten.ToListAsync());
+            var producten = _context.Producten.Include(p => p.Category).AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                producten = producten.Where(p => p.CategoryId == categoryId);
+            }
+
+            ViewBag.Categories = await _context.ProductCategories.ToListAsync();
+            ViewBag.SelectedCategoryId = categoryId;
+
+            return View(await producten.ToListAsync());
         }
 
         // GET: Producten/Details/5
@@ -31,7 +42,9 @@ namespace FlowBill.Controllers
             }
 
             var product = await _context.Producten
+                .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (product == null)
             {
                 return NotFound();
@@ -41,23 +54,27 @@ namespace FlowBill.Controllers
         }
 
         // GET: Producten/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewData["CategoryId"] = new SelectList(await _context.ProductCategories.ToListAsync(), "Id", "Naam");
             return View();
         }
 
         // POST: Producten/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Naam,Omschrijving,Prijs,BTWPercentage,Voorraad,SKU,IsActief")] Product product)
+        public async Task<IActionResult> Create([Bind("Naam,CategoryId,Omschrijving,Prijs,BTWPercentage,Voorraad,SKU,IsActief")] Product product)
         {
             if (ModelState.IsValid)
             {
                 product.AangemaaktOp = DateTime.Now;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Product succesvol aangemaakt!";
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["CategoryId"] = new SelectList(await _context.ProductCategories.ToListAsync(), "Id", "Naam", product.CategoryId);
             return View(product);
         }
 
@@ -74,13 +91,15 @@ namespace FlowBill.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["CategoryId"] = new SelectList(await _context.ProductCategories.ToListAsync(), "Id", "Naam", product.CategoryId);
             return View(product);
         }
 
         // POST: Producten/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Naam,Omschrijving,Prijs,BTWPercentage,Voorraad,SKU,IsActief,AangemaaktOp")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Naam,CategoryId,Omschrijving,Prijs,BTWPercentage,Voorraad,SKU,IsActief,AangemaaktOp")] Product product)
         {
             if (id != product.Id)
             {
@@ -93,6 +112,7 @@ namespace FlowBill.Controllers
                 {
                     _context.Update(product);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = "Product succesvol bijgewerkt!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -107,6 +127,8 @@ namespace FlowBill.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["CategoryId"] = new SelectList(await _context.ProductCategories.ToListAsync(), "Id", "Naam", product.CategoryId);
             return View(product);
         }
 
@@ -119,7 +141,9 @@ namespace FlowBill.Controllers
             }
 
             var product = await _context.Producten
+                .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (product == null)
             {
                 return NotFound();
@@ -138,6 +162,7 @@ namespace FlowBill.Controllers
             {
                 _context.Producten.Remove(product);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Product succesvol verwijderd!";
             }
 
             return RedirectToAction(nameof(Index));
