@@ -11,6 +11,9 @@ namespace FlowBill.Models
         [Display(Name = "Productnaam")]
         public string Naam { get; set; }
 
+        [Display(Name = "Categorie")]
+        public int? CategoryId { get; set; }
+
         [Display(Name = "Omschrijving")]
         public string? Omschrijving { get; set; }
 
@@ -38,6 +41,7 @@ namespace FlowBill.Models
         public DateTime AangemaaktOp { get; set; } = DateTime.Now;
 
         // Navigation properties
+        public virtual ProductCategory? Category { get; set; }
         public virtual ICollection<BestellingItem> BestellingItems { get; set; } = new List<BestellingItem>();
     }
 }
