@@ -49,12 +49,23 @@
                 </a>
             </li>
 
-            <!-- Nav Item - Producten -->
+            <!-- Nav Item - Producten Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link" asp-controller="Producten" asp-action="Index">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProducten"
+                   aria-expanded="true" aria-controls="collapseProducten">
                     <i class="fas fa-fw fa-box"></i>
                     <span>Producten</span>
                 </a>
+                <div id="collapseProducten" class="collapse" aria-labelledby="headingProducten" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-controller="Producten" asp-action="Index">
+                            <i class="fas fa-list"></i> Alle Producten
+                        </a>
+                        <a class="collapse-item" asp-controller="ProductCategories" asp-action="Index">
+                            <i class="fas fa-folder"></i> Categorieën
+                        </a>
+                    </div>
+                </div>
             </li>
 
             <!-- Nav Item - Bestellingen -->
@@ -70,6 +81,14 @@
                 <a class="nav-link" asp-controller="Facturen" asp-action="Index">
                     <i class="fas fa-fw fa-file-invoice-dollar"></i>
                     <span>Facturen</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Rapporten -->
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Rapporten" asp-action="Index">
+                    <i class="fas fa-fw fa-chart-bar"></i>
+                    <span>Rapporten</span>
                 </a>
             </li>
 

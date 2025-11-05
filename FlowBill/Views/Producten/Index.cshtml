@@ -2,14 +2,21 @@
 
 @{
     ViewData["Title"] = "Producten";
+    var categories = ViewBag.Categories as List<FlowBill.Models.ProductCategory>;
+    var selectedCategoryId = ViewBag.SelectedCategoryId as int?;
 }
 
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Producten</h1>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Nieuw Product
-        </a>
+        <div>
+            <a asp-controller="ProductCategories" asp-action="Index" class="btn btn-info mr-2">
+                <i class="fas fa-folder"></i> Beheer Categorieën
+            </a>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nieuw Product
+            </a>
+        </div>
     </div>
 
     @if (TempData["Success"] != null)
@@ -22,6 +29,39 @@
         </div>
     }
 
+    <!-- Category Filter -->
+    @if (categories != null && categories.Any())
+    {
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <strong><i class="fas fa-filter"></i> Filter op categorie:</strong>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <a asp-action="Index" class="btn btn-outline-primary @(selectedCategoryId == null ? "active" : "")">
+                                <i class="fas fa-th"></i> Alle Producten
+                            </a>
+                            @foreach (var category in categories)
+                            {
+                                <a asp-action="Index" asp-route-categoryId="@category.Id"
+                                   class="btn btn-outline-primary @(selectedCategoryId == category.Id ? "active" : "")">
+                                    @if (!string.IsNullOrEmpty(category.IconClass))
+                                    {
+                                        <i class="@category.IconClass"></i>
+                                    }
+                                    @category.Naam
+                                    <span class="badge badge-light">@category.Producten.Count</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
     <div class="card shadow">
         <div class="card-body">
             @if (Model.Any())
@@ -30,6 +70,7 @@
                     <table class="table table-hover" id="productenTable">
                         <thead>
                             <tr>
+                                <th>Categorie</th>
                                 <th>SKU</th>
                                 <th>Productnaam</th>
                                 <th>Prijs (excl. BTW)</th>
@@ -43,13 +84,28 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
+                                    <td>
+                                        @if (item.Category != null)
+                                        {
+                                            <span class="badge badge-primary">
+                                                @if (!string.IsNullOrEmpty(item.Category.IconClass))
+                                                {
+                                                    <i class="@item.Category.IconClass"></i>
+                                                }
+                                                @item.Category.Naam
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">Geen categorie</span>
+                                        }
+                                    </td>
                                     <td>@Html.DisplayFor(modelItem => item.SKU)</td>
                                     <td>
                                         <strong>@Html.DisplayFor(modelItem => item.Naam)</strong>
                                         @if (!string.IsNullOrEmpty(item.Omschrijving))
                                         {
                                             <br>
-                                
                                             <small class="text-muted">@item.Omschrijving</small>
                                         }
                                     </td>
@@ -96,9 +152,19 @@
             {
                 <div class="text-center py-5">
                     <i class="fas fa-box fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">Nog geen producten aanwezig.</p>
+                    @if (selectedCategoryId.HasValue)
+                    {
+                        <p class="text-muted">Geen producten in deze categorie.</p>
+                        <a asp-action="Index" class="btn btn-secondary mr-2">
+                            <i class="fas fa-list"></i> Toon alle producten
+                        </a>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Nog geen producten aanwezig.</p>
+                    }
                     <a asp-action="Create" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Voeg eerste product toe
+                        <i class="fas fa-plus"></i> Voeg product toe
                     </a>
                 </div>
             }
@@ -127,9 +193,9 @@
                 },
                 "pageLength": 10,
                 "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Alle"]],
-                "order": [[1, "asc"]],
+                "order": [[2, "asc"]], // Sort by product name
                 "columnDefs": [
-                    { "orderable": false, "targets": 6 }
+                    { "orderable": false, "targets": 7 } // Disable sorting on action column
                 ],
                 "responsive": true,
                 "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +

@@ -14,7 +14,7 @@
                 <div class="card-body">
                     <form asp-action="Create">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -25,19 +25,28 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="SKU" class="control-label"></label>
-                                    <input asp-for="SKU" class="form-control" />
-                                    <span asp-validation-for="SKU" class="text-danger"></span>
+                                    <label asp-for="CategoryId" class="control-label"></label>
+                                    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                                        <option value="">-- Selecteer categorie (optioneel) --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        
+
+                        <div class="form-group">
+                            <label asp-for="SKU" class="control-label"></label>
+                            <input asp-for="SKU" class="form-control" placeholder="Bijv. WEB001, GAME001, SPORT001" />
+                            <span asp-validation-for="SKU" class="text-danger"></span>
+                        </div>
+
                         <div class="form-group">
                             <label asp-for="Omschrijving" class="control-label"></label>
-                            <textarea asp-for="Omschrijving" class="form-control" rows="3"></textarea>
+                            <textarea asp-for="Omschrijving" class="form-control" rows="3"
+                                      placeholder="Beschrijving van het product"></textarea>
                             <span asp-validation-for="Omschrijving" class="text-danger"></span>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -60,6 +69,9 @@
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
+                                    <small class="form-text text-muted">
+                                        Standaard: 21% (algemeen), 9% (verlaagd), 0% (vrijgesteld)
+                                    </small>
                                     <span asp-validation-for="BTWPercentage" class="text-danger"></span>
                                 </div>
                             </div>
@@ -71,15 +83,17 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <div class="custom-control custom-checkbox">
-                                <input asp-for="IsActief" class="custom-control-input" />
+                                <input asp-for="IsActief" class="custom-control-input" checked />
                                 <label asp-for="IsActief" class="custom-control-label"></label>
                             </div>
-                            <span asp-validation-for="IsActief" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                Alleen actieve producten zijn beschikbaar bij het aanmaken van bestellingen
+                            </small>
                         </div>
-                        
+
                         <div class="form-group mt-4">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Opslaan
@@ -96,5 +110,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
