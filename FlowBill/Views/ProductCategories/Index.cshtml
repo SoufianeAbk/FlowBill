@@ -1,0 +1,126 @@
+﻿@model IEnumerable<FlowBill.Models.ProductCategory>
+
+@{
+    ViewData["Title"] = "Product Categorieën";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Product Categorieën</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nieuwe Categorie
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <div class="row">
+        @if (Model.Any())
+        {
+            @foreach (var category in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                @if (!string.IsNullOrEmpty(category.IconClass))
+                                {
+                                    <i class="@category.IconClass"></i>
+                                }
+                                @category.Naam
+                                @if (category.IsActief)
+                                {
+                                    <span class="badge badge-success float-right">Actief</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-secondary float-right">Inactief</span>
+                                }
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            @if (!string.IsNullOrEmpty(category.Omschrijving))
+                            {
+                                <p class="card-text">@category.Omschrijving</p>
+                            }
+
+                            <p class="mb-2">
+                                <strong>Aantal producten:</strong>
+                                <span class="badge badge-info">@category.Producten.Count</span>
+                            </p>
+
+                            @if (category.Producten.Any())
+                            {
+                                <div class="mt-3">
+                                    <small class="text-muted">Voorbeelden:</small>
+                                    <ul class="small">
+                                        @foreach (var product in category.Producten.Take(3))
+                                        {
+                                            <li>@product.Naam</li>
+                                        }
+                                        @if (category.Producten.Count > 3)
+                                        {
+                                            <li class="text-muted">... en @(category.Producten.Count - 3) meer</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group w-100" role="group">
+                                <a asp-action="Details" asp-route-id="@category.Id"
+                                   class="btn btn-sm btn-info" title="Details">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                                <a asp-controller="Producten" asp-action="Index" asp-route-categoryId="@category.Id"
+                                   class="btn btn-sm btn-success" title="Producten bekijken">
+                                    <i class="fas fa-box"></i> Producten
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@category.Id"
+                                   class="btn btn-sm btn-warning" title="Bewerken">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@category.Id"
+                                   class="btn btn-sm btn-danger" title="Verwijderen">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Nog geen categorieën aanwezig.</p>
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Voeg eerste categorie toe
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

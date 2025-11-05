@@ -1,0 +1,99 @@
+﻿@model FlowBill.Models.ProductCategory
+
+@{
+    ViewData["Title"] = "Nieuwe Categorie";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h4 class="mb-0">Nieuwe Product Categorie Toevoegen</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="form-group">
+                            <label asp-for="Naam" class="control-label"></label>
+                            <input asp-for="Naam" class="form-control" placeholder="Bijv. Webdiensten, Games, Sport..." />
+                            <span asp-validation-for="Naam" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Omschrijving" class="control-label"></label>
+                            <textarea asp-for="Omschrijving" class="form-control" rows="3"
+                                      placeholder="Optionele beschrijving van deze categorie"></textarea>
+                            <span asp-validation-for="Omschrijving" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="IconClass" class="control-label"></label>
+                            <input asp-for="IconClass" class="form-control" placeholder="Bijv. fas fa-globe, fas fa-gamepad, fas fa-dumbbell" />
+                            <small class="form-text text-muted">
+                                Gebruik Font Awesome icon classes.
+                                <a href="https://fontawesome.com/icons" target="_blank">Bekijk beschikbare icons</a>
+                            </small>
+                            <span asp-validation-for="IconClass" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input asp-for="IsActief" class="custom-control-input" checked />
+                                <label asp-for="IsActief" class="custom-control-label"></label>
+                            </div>
+                            <small class="form-text text-muted">
+                                Alleen actieve categorieën worden getoond bij het aanmaken van producten
+                            </small>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Opslaan
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuleren
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!--Voorbeeld Icons -->
+            <div class="card shadow mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">Populaire Icon Voorbeelden</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-globe text-primary"></i> <code>fas fa-globe</code> - Web/Internet</li>
+                                <li class="mb-2"><i class="fas fa-gamepad text-primary"></i> <code>fas fa-gamepad</code> - Games</li>
+                                <li class="mb-2"><i class="fas fa-dumbbell text-primary"></i> <code>fas fa-dumbbell</code> - Sport/Fitness</li>
+                                <li class="mb-2"><i class="fas fa-laptop text-primary"></i> <code>fas fa-laptop</code> - Computers</li>
+                                <li class="mb-2"><i class="fas fa-book text-primary"></i> <code>fas fa-book</code> - Boeken</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-tshirt text-primary"></i> <code>fas fa-tshirt</code> - Kleding</li>
+                                <li class="mb-2"><i class="fas fa-utensils text-primary"></i> <code>fas fa-utensils</code> - Voedsel</li>
+                                <li class="mb-2"><i class="fas fa-mobile-alt text-primary"></i> <code>fas fa-mobile-alt</code> - Telefoons</li>
+                                <li class="mb-2"><i class="fas fa-camera text-primary"></i> <code>fas fa-camera</code> - Foto/Video</li>
+                                <li class="mb-2"><i class="fas fa-music text-primary"></i> <code>fas fa-music</code> - Muziek</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
